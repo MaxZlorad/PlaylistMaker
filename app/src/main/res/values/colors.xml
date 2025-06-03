@@ -3,9 +3,15 @@
     <color name="background_color">#3772E7</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#1A1B22</color>
-    <color name="button_text_color">#1A1B22</color>
+    <color name="gray">#AEAFB4</color>
+    <color name="black_text">#000000</color>
     <color name="icon_tint_color">#1A1B22</color>
     <color name="switch_track_color">#FFCCCCCC</color>
     <color name="switch_thumb_color">#FF00FF00</color>
     <color name="text_color">#1A1B22</color>
+
+    <color name="blue_knob">#3772E7</color>
+    <color name="gray_knob">#AEAFB4</color>
+    <color name="blue_track">#9FBBF3</color>
+    <color name="gray_track">#E6E8EB</color>
 </resources>
