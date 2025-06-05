@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.MainMenu.Button" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginBottom">@dimen/padding_medium</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/padding_small</item>
+        <item name="iconTint">@color/text_color</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:shadowColor">@android:color/transparent</item>
+    </style>
+    <style name="SettingsItemStyle" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/settings_text</item>
+        <item name="android:paddingHorizontal">@dimen/padding_horizontal</item>
+        <item name="android:paddingVertical">@dimen/padding_vertical</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+    <style name="ToolbarStyle" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textColor">@color/panel_header</item>
+        <item name="android:textSize">@dimen/header_text_size</item>
+        <item name="navigationIcon">@drawable/ic_arrow_back</item>
+    </style>
+    <style name="SearchElementStyle" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+</resources>

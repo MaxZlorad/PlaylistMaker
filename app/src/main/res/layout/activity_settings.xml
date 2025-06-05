@@ -3,65 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/background_settings_color"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
-        android:textSize="22sp"
-        android:textColor="@color/text_color"
-        app:navigationIcon="@drawable/ic_arrow_back"
+        android:id="@+id/settings_toolbar"
+        style="@style/ToolbarStyle"
         app:title="@string/settings_text" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/themeSwitch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/SettingsItemStyle"
         android:maxWidth="@dimen/max_button_width"
-        android:text="@string/dark_theme"
-        android:textColor="@color/black_text"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
-        android:textSize="@dimen/text_size"
         android:paddingStart="16dp"
-        android:paddingEnd="12dp"
         android:paddingTop="12dp"
+        android:paddingEnd="12dp"
         android:paddingBottom="12dp"
+        android:text="@string/dark_theme"
         app:switchMinWidth="46dp"
         app:thumbTint="@drawable/switch_thumb_selector"
         app:trackTint="@drawable/switch_track_selector"
         app:useMaterialThemeColors="false" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/shareTextView"
+        style="@style/SettingsItemStyle"
         android:drawableEnd="@drawable/ic_share"
-        android:text="@string/share_app"
-        android:textColor="@color/black_text"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
-        android:textSize="@dimen/text_size" />
+        android:text="@string/share_app" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/supportTextView"
+        style="@style/SettingsItemStyle"
         android:drawableEnd="@drawable/ic_support"
-        android:text="@string/contact_support"
-        android:textColor="@color/black_text"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
-        android:textSize="@dimen/text_size" />
+        android:text="@string/contact_support" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/termsTextView"
+        style="@style/SettingsItemStyle"
         android:drawableEnd="@drawable/ic_arrow_forward"
-        android:text="@string/user_agreement"
-        android:textColor="@color/black_text"
-        android:paddingHorizontal="@dimen/padding_horizontal"
-        android:paddingVertical="@dimen/padding_vertical"
-        android:textSize="@dimen/text_size" />
+        android:text="@string/user_agreement" />
 </LinearLayout>

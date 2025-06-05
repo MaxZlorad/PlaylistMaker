@@ -5,12 +5,13 @@
     <dimen name="header_text_size">22sp</dimen>
     <dimen name="list_item_height">61dp</dimen>
     <dimen name="icon_size">24dp</dimen>
+
     <dimen name="padding_medium">16dp</dimen>
     <dimen name="padding_small">12dp</dimen>
-
     <dimen name="padding_horizontal">16dp</dimen>
     <dimen name="padding_vertical">20dp</dimen>
-    <dimen name="text_size">16sp</dimen>
 
+    <dimen name="text_size">16sp</dimen>
     <dimen name="max_button_width">320dp</dimen>
+    <dimen name="search_text_size">16sp</dimen>
 </resources>
