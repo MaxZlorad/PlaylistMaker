@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
+import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
 
@@ -21,6 +22,12 @@ class SearchActivity : AppCompatActivity() {
         setupToolbar()
         setupClearButton()
         setupTextWatcher()
+
+        if (savedInstanceState != null) {
+            searchQuery = savedInstanceState.getString(SEARCH_QUERY_KEY, "")
+            searchInput.setText(searchQuery)
+            clearButton.isVisible = false
+        }
     }
 
     private fun initViews() {
@@ -47,7 +54,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: android.text.Editable?) {
                 searchQuery = s?.toString() ?: ""
-                clearButton.visibility = if (s.isNullOrEmpty()) ImageButton.GONE else ImageButton.VISIBLE
+                clearButton.isVisible = !s.isNullOrEmpty()
             }
         })
     }
@@ -61,6 +68,7 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         searchQuery = savedInstanceState.getString(SEARCH_QUERY_KEY, "")
         searchInput.setText(searchQuery)
+        clearButton.isVisible = searchQuery.isNotEmpty()
     }
 
     private fun hideKeyboard() {
