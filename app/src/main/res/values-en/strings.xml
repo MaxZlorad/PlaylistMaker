@@ -18,4 +18,8 @@
     <string name="terms_url">https://practicum.yandex.ru/offer</string>
 
     <string name="clear_search">Clear search</string>
+
+    <string name="track_name">Track name</string>
+    <string name="artist_name">Artist name</string>
+    <string name="track_time">0:01</string>
 </resources>
