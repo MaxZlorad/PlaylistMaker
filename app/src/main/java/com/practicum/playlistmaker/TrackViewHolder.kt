@@ -33,8 +33,8 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .load(track.artworkUrl100)
             .fitCenter()
             .transform(RoundedCorners(cornerRadius))
-            .placeholder(R.drawable.placeholder)
-            .error(R.drawable.placeholder)
+            .placeholder(R.drawable.placeholder_track_poster)
+            .error(R.drawable.placeholder_track_poster)
             .into(artwork)
     }
 }
