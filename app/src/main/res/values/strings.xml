@@ -19,4 +19,8 @@
     <string name="terms_url">https://yandex.ru/legal/practicum_offer/</string>
 
     <string name="clear_search">Очистить поиск</string>
+
+    <string name="track_name">Название трека111111111111111111111111111111111111111111111111</string>
+    <string name="artist_name">Исполнитель11111111111111111111111111111111111111111111111111111111111222222222222222</string>
+    <string name="track_time">0:011111111111111111111111111111111111111111111111111111111111</string>
 </resources>

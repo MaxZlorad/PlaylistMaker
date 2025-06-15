@@ -6,6 +6,7 @@
     <color name="black">#1A1B22</color>
     <color name="gray">#AEAFB4</color>
     <color name="blue">#3772E7</color>
+    <color name="dark">#000000</color>
     <color name="settings_icon">#AEAFB4</color>
     <color name="settings_text">#000000</color>
     <color name="icon_tint_color">#1A1B22</color>
@@ -20,6 +21,7 @@
     <color name="blue_track">#9FBBF3</color>
     <color name="gray_track">#E6E8EB</color>
 
+    <color name="background_item_track">#FFFFFF</color>
     <color name="search_field_element">#AEAFB4</color>
     <color name="search_field_background">#E6E8EB</color>
 </resources>
