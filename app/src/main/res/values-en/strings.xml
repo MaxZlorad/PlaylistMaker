@@ -22,4 +22,8 @@
     <string name="track_name">Track name</string>
     <string name="artist_name">Artist name</string>
     <string name="track_time">0:01</string>
+
+    <string name="error_search">"Nothing found"</string>
+    <string name="error_internet">"Connection problems\n\nDownload failed. Check your internet connection"</string>
+    <string name="refrash_text">"Refresh"</string>
 </resources>

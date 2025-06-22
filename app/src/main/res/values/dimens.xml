@@ -15,6 +15,8 @@
     <dimen name="max_text_width">290dp</dimen>
 
     <dimen name="text_max">22sp</dimen>
+    <dimen name="text_medium_max">19sp</dimen>
     <dimen name="text_medium">16sp</dimen>
+    <dimen name="text_medium_small">14sp</dimen>
     <dimen name="text_small">11sp</dimen>
 </resources>

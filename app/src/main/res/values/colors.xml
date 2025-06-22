@@ -7,6 +7,9 @@
     <color name="gray">#AEAFB4</color>
     <color name="blue">#3772E7</color>
     <color name="dark">#000000</color>
+    <color name="black_white">#1A1B22</color>
+    <color name="white_black">#FFFFFF</color>
+    <color name="yellow">#FCD452</color>
     <color name="settings_icon">#AEAFB4</color>
     <color name="settings_text">#000000</color>
     <color name="icon_tint_color">#1A1B22</color>
