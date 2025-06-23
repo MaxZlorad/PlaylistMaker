@@ -84,6 +84,10 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: android.text.Editable?) {
                 searchQuery = s?.toString() ?: ""
                 clearButton.isVisible = !s.isNullOrEmpty()
+
+                if (s.isNullOrEmpty()) {
+                    showEmptyState()
+                }
             }
         })
     }
@@ -192,6 +196,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.visibility = View.GONE
         errorInternetView.visibility = View.GONE
         errorSearchView.visibility = View.GONE
+        adapter.updateTracks(emptyList())
     }
 
     //private fun loadTracks() {}
