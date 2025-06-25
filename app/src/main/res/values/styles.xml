@@ -39,6 +39,7 @@
     </style>
     <style name="SearchElementStyle" parent="@style/Widget.MaterialComponents.TextView">
         <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="SongTitleStyle">
@@ -54,5 +55,12 @@
         <item name="android:textColor">@color/gray</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">1</item>
+    </style>
+    <style name="ErrorsTextView">
+        <item name="android:textSize">@dimen/text_medium_max</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">102dp</item>
+        <item name="android:drawablePadding">@dimen/padding_medium</item>
     </style>
 </resources>

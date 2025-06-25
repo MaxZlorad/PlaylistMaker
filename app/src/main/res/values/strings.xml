@@ -20,7 +20,11 @@
 
     <string name="clear_search">Очистить поиск</string>
 
-    <string name="track_name">Название трека111111111111111111111111111111111111111111111111</string>
-    <string name="artist_name">Исполнитель11111111111111111111111111111111111111111111111111111111111222222222222222</string>
-    <string name="track_time">0:011111111111111111111111111111111111111111111111111111111111</string>
+    <string name="track_name">Название трека</string>
+    <string name="artist_name">Исполнитель</string>
+    <string name="track_time">0:01</string>
+
+    <string name="error_search">"Ничего не нашлось"</string>
+    <string name="error_internet">"Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету"</string>
+    <string name="refrash_text">"Обновить"</string>
 </resources>
