@@ -1,10 +1,12 @@
 package com.practicum.playlistmaker
 
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
 
 class SettingsActivity : AppCompatActivity() {
@@ -14,6 +16,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
         setupToolbar()
+        setupThemeSwitcher()
         setupShareButton()
         setupSupportButton()
         setupTermsButton()
@@ -22,6 +25,15 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupToolbar() {
         findViewById<MaterialToolbar>(R.id.settings_toolbar).setNavigationOnClickListener {
             finish()
+        }
+    }
+
+    private fun setupThemeSwitcher() {
+        val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
+
+        themeSwitch.isChecked = (application as App).darkTheme
+        themeSwitch.setOnCheckedChangeListener { _, isChecked ->
+            (application as App).switchTheme(isChecked)
         }
     }
 
