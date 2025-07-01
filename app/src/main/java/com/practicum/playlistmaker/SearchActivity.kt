@@ -100,7 +100,14 @@ class SearchActivity : AppCompatActivity() {
         clearButton.setOnClickListener {
             searchInput.text.clear()
             hideKeyboard()
-            showEmptyState()
+
+            // После очистки показать историю, если она есть
+            if (searchHistory.getHistory().isNotEmpty()) {
+                searchInput.requestFocus() // Фокус полю ввода
+                updateHistoryVisibility() // Обновляем видимость истории
+            } else {
+                showEmptyState()
+            }
         }
     }
 
