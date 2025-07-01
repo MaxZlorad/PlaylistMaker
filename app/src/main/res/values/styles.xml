@@ -63,4 +63,31 @@
         <item name="android:layout_marginTop">102dp</item>
         <item name="android:drawablePadding">@dimen/padding_medium</item>
     </style>
+    <style name="ClearButton" parent="Widget.MaterialComponents.Button">
+        <!-- Размеры и позиционирование -->
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">@dimen/padding_medium</item>
+        <item name="android:layout_marginBottom">@dimen/padding_medium</item>
+        <item name="android:paddingHorizontal">@dimen/padding_medium</item>
+        <item name="android:paddingVertical">@dimen/padding_micro</item>
+        <!-- Цвета -->
+        <item name="backgroundTint">@color/black_white</item>  <!-- Фон кнопки -->
+        <item name="android:textColor">@color/white_black</item> <!-- Цвет текста -->
+        <!-- Текст -->
+        <item name="android:textSize">@dimen/text_medium_small</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <!-- Форма -->
+        <item name="cornerRadius">54dp</item> <!-- Скругление углов -->
+        <!-- Эффекты -->
+        <item name="rippleColor">@color/white</item> <!-- Цвет ripple-эффекта -->
+        <item name="android:elevation">2dp</item>
+        <item name="android:stateListAnimator">@null</item> <!-- Отключаем анимацию по умолчанию -->
+        <!-- Дополнительно -->
+        <item name="android:minWidth">120dp</item> <!-- Минимальная ширина -->
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
 </resources>

@@ -15,7 +15,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:paddingHorizontal="@dimen/padding_horizontal" >
+        android:paddingHorizontal="@dimen/padding_horizontal">
 
         <EditText
             android:id="@+id/search_input"
@@ -50,24 +50,61 @@
             android:contentDescription="@string/clear_search"
             android:src="@drawable/ic_clear"
             android:visibility="invisible" />
-
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <LinearLayout
+            android:id="@+id/history_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible"
+            android:elevation="2dp">
+
+
+            <TextView
+                android:id="@+id/history_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingStart="@dimen/padding_horizontal"
+                android:paddingTop="@dimen/padding_medium_max"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_horizontal"
+                android:text="@string/search_history"
+                android:textColor="@color/black_white"
+                android:textSize="@dimen/text_medium_max"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/history_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:paddingTop="@dimen/padding_micro"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_track" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/ClearButton"
+                android:id="@+id/clear_history_button"
+                android:text="@string/clear_history" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tracks_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:paddingTop="@dimen/padding_micro"
+            android:paddingBottom="@dimen/padding_micro"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_track"
-            android:visibility="visible"
-            />
+            tools:listitem="@layout/item_track" />
 
         <TextView
             android:id="@+id/error_search"
@@ -94,13 +131,13 @@
                 app:drawableTopCompat="@drawable/error_internet" />
 
             <Button
-                android:id="@+id/refrash_button"
+                android:id="@+id/refresh_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/icon_size"
                 android:fontFamily="@font/ys_display_medium"
-                android:text="@string/refrash_text"
+                android:text="@string/refresh_text"
                 android:textAllCaps="false"
                 android:textColor="@color/white_black"
                 android:textSize="@dimen/text_medium_small"
