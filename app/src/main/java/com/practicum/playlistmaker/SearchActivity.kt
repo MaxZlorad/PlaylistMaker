@@ -157,6 +157,7 @@ class SearchActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         adapter = TrackAdapter(emptyList()) { track ->
             searchHistory.addTrack(track) // Добавляем трек в историю
+            PlayerActivity.start(this, track) // переход в плеер трека
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -251,8 +252,10 @@ class SearchActivity : AppCompatActivity() {
         // Адаптер для истории (такой же, как для результатов)
         historyAdapter = TrackAdapter(emptyList()) { track ->
             // Клик по треку в истории:
-            searchInput.setText("${track.trackName} ${track.artistName}")
-            searchHistory.addTrack(track) // Обновляем позицию трека в истории
+            //searchInput.setText("${track.trackName} ${track.artistName}") // не надо ввод в поиск
+            searchHistory.addTrack(track) // Обновляем позицию трека в истории (надо ли в перспективе?)
+            PlayerActivity.start(this, track) // переход плеер трека
+
             updateHistoryVisibility()
         }
 
