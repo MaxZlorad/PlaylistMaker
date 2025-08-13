@@ -29,4 +29,12 @@
 
     <string name="search_history">You searched</string>
     <string name="clear_history">Clear history</string>
+
+    <string name="player_title">Audio player</string>
+    <string name="duration_label">Duration</string>
+    <string name="album_label">Album</string>
+    <string name="year_label">Year</string>
+    <string name="genre_label">Genre</string>
+    <string name="country_label">Country</string>
+    <string name="album_art_description">Album cover</string>
 </resources>

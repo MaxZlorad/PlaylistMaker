@@ -2,12 +2,17 @@
 <resources>
     <dimen name="button_corner_radius">16dp</dimen>
     <dimen name="list_item_height">61dp</dimen>
+    <dimen name="icon_play_size">100dp</dimen>
+    <dimen name="icon_player_size">51dp</dimen>
     <dimen name="icon_size">24dp</dimen>
     <dimen name="cover_size">45dp</dimen>
     <dimen name="separator_size">13dp</dimen>
 
+    <dimen name="padding_big">24dp</dimen>
     <dimen name="padding_medium_max">18dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
+    <dimen name="padding_medium_small">14dp</dimen>
+    <dimen name="padding_small_medium">13dp</dimen>
     <dimen name="padding_small">12dp</dimen>
     <dimen name="padding_micro">8dp</dimen>
     <dimen name="padding_horizontal">16dp</dimen>
@@ -20,5 +25,6 @@
     <dimen name="text_medium_max">19sp</dimen>
     <dimen name="text_medium">16sp</dimen>
     <dimen name="text_medium_small">14sp</dimen>
+    <dimen name="text_small_medium">13dp</dimen>
     <dimen name="text_small">11sp</dimen>
 </resources>
