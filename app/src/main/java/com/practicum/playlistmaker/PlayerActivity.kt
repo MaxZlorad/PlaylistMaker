@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -20,8 +21,25 @@ class PlayerActivity : AppCompatActivity() {
         // Устанавливаем макет из XML
         setContentView(R.layout.player_activity)
 
-        // Получаем трек из Intent с учетом версии Android
-        val track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        // Получаем трек с использованием функции Compat
+        val track = getTrackCompat()
+
+        // Проверяем, не равен ли трек null
+        if (track == null) {
+            finish() // Закрываем Activity, если трек некорректен
+            return
+        }
+
+        Log.d("PlayerActivity", "Received track: ${track?.trackName ?: "null"}")
+        // Настраиваем верхнюю панель
+        setupToolbar()
+        // Заполняем интерфейс данными
+        setupViews(track)
+    }
+
+    // Получаем трек из Intent с учетом версии Android
+    private fun getTrackCompat(): Track? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Современный безопасный способ (Android 13+)
             intent.getSerializableExtra(TRACK_EXTRA, Track::class.java)
         } else {
@@ -29,11 +47,6 @@ class PlayerActivity : AppCompatActivity() {
             @Suppress("DEPRECATION")
             intent.getSerializableExtra(TRACK_EXTRA) as? Track
         }
-        Log.d("PlayerActivity", "Received track: ${track?.trackName ?: "null"}")
-        // Настраиваем верхнюю панель
-        setupToolbar()
-        // Заполняем интерфейс данными
-        setupViews(track)
     }
 
     // Настройка верхней панели (Toolbar)
@@ -50,18 +63,23 @@ class PlayerActivity : AppCompatActivity() {
     // Заполнение экрана данными о треке
     private fun setupViews(track: Track?) {
         track?.let { // Если трек не null
-            // Загрузка обложки альбома
+            // Находим все view один раз и сохраняем в переменные
+            val albumArt = findViewById<ImageView>(R.id.albumArt)
+            val trackNameView = findViewById<TextView>(R.id.trackName)
+            val artistNameView = findViewById<TextView>(R.id.artistName)
+            val currentTimeView = findViewById<TextView>(R.id.currentTime)
+
             Glide.with(this)
                 .load(it.getCoverArtwork()) // URL в высоком качестве
                 .placeholder(R.drawable.placeholder_track_poster) // Заглушка
-                .into(findViewById(R.id.albumArt)) // ImageView для отображения
+                .into(albumArt) // ImageView для отображения
 
             // Основная информация о треке
-            findViewById<TextView>(R.id.trackName).text = it.trackName
-            findViewById<TextView>(R.id.artistName).text = it.artistName
+            trackNameView.text = it.trackName
+            artistNameView.text = it.artistName
 
             // Форматирование времени трека (минуты:секунды)
-            findViewById<TextView>(R.id.currentTime).text =
+            currentTimeView.text =
                 SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis)
 
             // Блок информации о продолжительности
