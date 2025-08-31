@@ -1,7 +1,9 @@
 package com.practicum.playlistmaker
 
-import android.graphics.Color
+
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
@@ -35,6 +38,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyRecyclerView: RecyclerView // Список истории поиска
     private lateinit var clearHistoryButton: Button // Кнопка очистки истории
 
+    private lateinit var progressBar: ProgressBar // Индикатор загрузки
+
     // Адаптеры
     private lateinit var adapter: TrackAdapter // Для результатов поиска
     private lateinit var historyAdapter: TrackAdapter // Для истории поиска
@@ -42,12 +47,22 @@ class SearchActivity : AppCompatActivity() {
     // Логика
     private lateinit var searchHistory: SearchHistory // Менеджер истории (читает/сохраняет треки)
     private var searchQuery: String = "" // Текущий поисковый запрос
-
     private val iTunesApiService = ItunesApiClient.apiService // Сервис для поиска треков
+
+    // Переменные для debounce
+    private var isClickAllowed = true // Флаг для ограничения кликов
+    private val handler = Handler(Looper.getMainLooper()) // Handler для debounce
+    private lateinit var searchRunnable: Runnable // Runnable для отложенного поиска
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
+        // Инициализация ProgressBar
+        progressBar = findViewById(R.id.progress_bar)
+
+        // Инициализация Runnable для поиска
+        searchRunnable = Runnable { performSearch(searchQuery) }
 
         initViews() // Инициализация всех View элементов
 
@@ -70,7 +85,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         updateHistoryVisibility() // Первичное обновление видимости
-
     }
 
     private fun initViews() {
@@ -78,6 +92,7 @@ class SearchActivity : AppCompatActivity() {
         searchInput = findViewById(R.id.search_input)
         clearButton = findViewById(R.id.clear_button)
         recyclerView = findViewById(R.id.tracks_recycler_view)
+        progressBar = findViewById(R.id.progress_bar)
 
         // Элементы ошибок
         errorInternetView = findViewById(R.id.error_internet)
@@ -121,6 +136,8 @@ class SearchActivity : AppCompatActivity() {
 
                 if (s.isNullOrEmpty()) {
                     showEmptyState()
+                } else {
+                    searchDebounce() // Запускаем debounce при изменении текста
                 }
                 updateHistoryVisibility() // Добавлен вызов обновления видимости истории
 
@@ -131,6 +148,24 @@ class SearchActivity : AppCompatActivity() {
         searchInput.setOnFocusChangeListener { _, hasFocus ->
             updateHistoryVisibility()
         }
+    }
+
+    // Функция для debounce кликов
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    // Функция для debounce поиска
+    private fun searchDebounce() {
+        // Удаляем предыдущий отложенный поиск
+        handler.removeCallbacks(searchRunnable)
+        // Запускаем новый поиск через 2 секунды
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -148,10 +183,6 @@ class SearchActivity : AppCompatActivity() {
     private fun hideKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
-    }
-
-    companion object {
-        private const val SEARCH_QUERY_KEY = "search_query"
     }
 
     private fun setupRecyclerView() {
@@ -209,6 +240,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showLoadingState() {
+        progressBar.visibility = View.VISIBLE
         searchHistoryView.visibility = View.GONE
         recyclerView.visibility = View.GONE
         errorInternetView.visibility = View.GONE
@@ -216,6 +248,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showTracks(tracks: List<Track>) {
+        progressBar.visibility = View.GONE // Скрываем индикатор загрузки
         searchHistoryView.visibility = View.GONE // История скрыта
         recyclerView.visibility = View.VISIBLE
         errorInternetView.visibility = View.GONE
@@ -224,6 +257,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showEmptyResultsState() {
+        progressBar.visibility = View.GONE // Скрываем индикатор загрузки
         searchHistoryView.visibility = View.GONE
         recyclerView.visibility = View.GONE
         errorInternetView.visibility = View.GONE
@@ -232,15 +266,24 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showErrorState() {
+        progressBar.visibility = View.GONE // Скрываем индикатор загрузки
         searchHistoryView.visibility = View.GONE
         recyclerView.visibility = View.GONE
         errorInternetView.visibility = View.VISIBLE
         errorSearchView.visibility = View.GONE
-        searchHistoryView.visibility = View.VISIBLE
-        searchHistoryView.setOnClickListener { performSearch(searchQuery) }
+        //searchHistoryView.visibility = View.VISIBLE
+        //searchHistoryView.setOnClickListener { performSearch(searchQuery) }
+
+        // Устанавливаем обработчик для кнопки обновления
+        refreshButton.setOnClickListener {
+            if (clickDebounce()) {
+                performSearch(searchQuery)
+            }
+        }
     }
 
     private fun showEmptyState() {
+        progressBar.visibility = View.GONE // Скрываем индикатор загрузки
         searchHistoryView.visibility = View.GONE
         recyclerView.visibility = View.GONE
         errorInternetView.visibility = View.GONE
@@ -251,17 +294,36 @@ class SearchActivity : AppCompatActivity() {
     private fun setupHistoryViews() {
         // Адаптер для истории (такой же, как для результатов)
         historyAdapter = TrackAdapter(emptyList()) { track ->
-            // Клик по треку в истории:
-            //searchInput.setText("${track.trackName} ${track.artistName}") // не надо ввод в поиск
-            searchHistory.addTrack(track) // Обновляем позицию трека в истории (надо ли в перспективе?)
-            PlayerActivity.start(this, track) // переход плеер трека
 
-            updateHistoryVisibility()
+            // Клик по треку в истории с debounce
+            if (clickDebounce()) {
+                // Клик по треку в истории:
+                //searchInput.setText("${track.trackName} ${track.artistName}") // не надо ввод в поиск
+                searchHistory.addTrack(track) // Обновляем позицию трека в истории (надо ли в перспективе?)
+                PlayerActivity.start(this, track) // переход плеер трека
+
+                updateHistoryVisibility()
+            }
         }
 
         // Настройка RecyclerView
         historyRecyclerView.layoutManager = LinearLayoutManager(this)
         historyRecyclerView.adapter = historyAdapter
+
+        // Обработчик для кнопки очистки истории с debounce
+        clearHistoryButton.setOnClickListener {
+            if (clickDebounce()) {
+                Log.d("SearchActivity", "Нажатие кнопки очистки истории")
+                searchHistory.clearHistory()
+                Log.d("SearchActivity", "История очищена. Новый размер: ${searchHistory.getHistory().size}")
+
+                historyAdapter.updateTracks(emptyList()) // Обновляем адаптер
+                clearHistoryButton.visibility = View.GONE
+                searchHistoryView.visibility = View.GONE
+
+                updateHistoryVisibility()
+            }
+        }
 
     }
 
@@ -282,6 +344,8 @@ class SearchActivity : AppCompatActivity() {
         } else {
             historyAdapter.updateTracks(emptyList()) // Если истории нет, передаем пустой список
         }
+
+        /*
         Log.d("SearchActivity", "Clear button enabled: ${clearHistoryButton.isEnabled}")
         Log.d("SearchActivity", "Clear button visibility: ${clearHistoryButton.visibility}")
         clearHistoryButton.post {
@@ -299,5 +363,14 @@ class SearchActivity : AppCompatActivity() {
 
             updateHistoryVisibility()
         }
+        */
+    }
+
+    companion object {
+        private const val SEARCH_QUERY_KEY = "search_query"
+
+        // Константы для debounce
+        private const val CLICK_DEBOUNCE_DELAY = 1000L // 1 секунда для кликов
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L // 2 секунды для поиска
     }
 }
