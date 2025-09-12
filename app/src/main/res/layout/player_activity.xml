@@ -80,7 +80,7 @@
 
         <!-- Кнопка воспроизведения -->
         <ImageButton
-            android:id="@+id/playButton"
+            android:id="@+id/buttonPlayPause"
             android:layout_width="@dimen/icon_play_size"
             android:layout_height="@dimen/icon_play_size"
             android:layout_marginTop="32dp"
@@ -99,7 +99,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/playButton"
+            app:layout_constraintTop_toBottomOf="@id/buttonPlayPause"
             style="@style/ToolbarStyle"
             android:textSize="@dimen/text_medium"
             tools:text="0:01" />
@@ -111,9 +111,9 @@
             android:layout_height="@dimen/icon_player_size"
             android:layout_marginStart="@dimen/padding_big"
             android:background="@drawable/play_field_background"
-            app:layout_constraintBottom_toBottomOf="@id/playButton"
+            app:layout_constraintBottom_toBottomOf="@id/buttonPlayPause"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/playButton"
+            app:layout_constraintTop_toTopOf="@id/buttonPlayPause"
             app:srcCompat="@drawable/ic_queue" />
 
         <!-- Кнопка "Добавить в избранное" -->
@@ -123,9 +123,9 @@
             android:layout_height="@dimen/icon_player_size"
             android:layout_marginEnd="@dimen/padding_big"
             android:background="@drawable/play_field_background"
-            app:layout_constraintBottom_toBottomOf="@id/playButton"
+            app:layout_constraintBottom_toBottomOf="@id/buttonPlayPause"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/playButton"
+            app:layout_constraintTop_toTopOf="@id/buttonPlayPause"
             app:srcCompat="@drawable/ic_favorite_border" />
 
         <!-- Блок информации -->
