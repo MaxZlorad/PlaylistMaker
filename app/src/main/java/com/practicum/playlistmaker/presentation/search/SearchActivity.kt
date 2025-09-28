@@ -1,10 +1,9 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.search
 
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -19,11 +18,14 @@ import com.google.android.material.appbar.MaterialToolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.practicum.playlistmaker.presentation.player.PlayerActivity
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.track.TrackAdapter
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.domain.api.TracksInteractor
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), TracksInteractor.TracksConsumer {
 
     // UI элементы
     private lateinit var searchInput: EditText // Поле ввода поиска
@@ -44,31 +46,31 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var adapter: TrackAdapter // Для результатов поиска
     private lateinit var historyAdapter: TrackAdapter // Для истории поиска
 
-    // Логика
-    private lateinit var searchHistory: SearchHistory // Менеджер истории (читает/сохраняет треки)
-    private var searchQuery: String = "" // Текущий поисковый запрос
-    private val iTunesApiService = ItunesApiClient.apiService // Сервис для поиска треков
+    // Интерактор для работы с треками (Domain слой)
+    private lateinit var tracksInteractor: TracksInteractor
 
-    // Переменные для debounce
-    private var isClickAllowed = true // Флаг для ограничения кликов
+    // Логика ххде?
+    private var searchQuery: String = "" // Текущий поисковый запрос
+
+    // Переменные для debounce private var isClickAllowed = true // Флаг для ограничения кликов
+    private var isClickAllowed = true
     private val handler = Handler(Looper.getMainLooper()) // Handler для debounce
     private lateinit var searchRunnable: Runnable // Runnable для отложенного поиска
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        // Инициализация ProgressBar
-        progressBar = findViewById(R.id.progress_bar)
 
-        // Инициализация Runnable для поиска
+        // Инициализируем интерактор через Creator (связь с Domain слоем)
+        tracksInteractor = Creator.provideTracksInteractor(this)
+
+        // Инициализация Runnable для отложенного поиска
         searchRunnable = Runnable { performSearch(searchQuery) }
 
         initViews() // Инициализация всех View элементов
 
-        // Инициализация менеджера истории
-        searchHistory = SearchHistory(getSharedPreferences("app_prefs", MODE_PRIVATE))
-        searchHistory.loadHistory() // Загружаем сохранённые треки
 
         setupHistoryViews() // Настраиваем АДАПТЕР истории
         setupRecyclerView() // Настраиваем АДАПТЕР списка результатов
@@ -111,21 +113,23 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    // Настройка кнопки очистки поля (UI логика)
     private fun setupClearButton() {
         clearButton.setOnClickListener {
             searchInput.text.clear()
             hideKeyboard()
 
-            // После очистки показать историю, если она есть
-            if (searchHistory.getHistory().isNotEmpty()) {
-                searchInput.requestFocus() // Фокус полю ввода
-                updateHistoryVisibility() // Обновляем видимость истории
-            } else {
-                showEmptyState()
-            }
+            // Используем существующий метод для очистки всего
+            showEmptyState()
+
+            // Но убеждаемся, что история показывается при пустом поле
+            updateHistoryVisibility()
+
+            searchInput.requestFocus()
         }
     }
 
+    // Слушатель изменений текста (UI логика)
     private fun setupTextWatcher() {
         searchInput.addTextChangedListener(object : android.text.TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -140,7 +144,6 @@ class SearchActivity : AppCompatActivity() {
                     searchDebounce() // Запускаем debounce при изменении текста
                 }
                 updateHistoryVisibility() // Добавлен вызов обновления видимости истории
-
             }
         })
 
@@ -150,36 +153,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    // Функция для debounce кликов
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-    // Функция для debounce поиска
-    private fun searchDebounce() {
-        // Удаляем предыдущий отложенный поиск
-        handler.removeCallbacks(searchRunnable)
-        // Запускаем новый поиск через 2 секунды
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_QUERY_KEY, searchQuery) // Сохраняем запрос
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchQuery = savedInstanceState.getString(SEARCH_QUERY_KEY, "")
-        searchInput.setText(searchQuery)
-        clearButton.isVisible = searchQuery.isNotEmpty()
-    }
-
+    // Скрытие клавиатуры (UI логика)
     private fun hideKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(searchInput.windowToken, 0)
@@ -187,8 +161,12 @@ class SearchActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         adapter = TrackAdapter(emptyList()) { track ->
-            searchHistory.addTrack(track) // Добавляем трек в историю
-            PlayerActivity.start(this, track) // переход в плеер трека
+
+            // Используем интерактор для добавления трека в историю
+            tracksInteractor.addTrackToHistory(track) // Domain слой
+
+            // Запускаем плеер (UI логика)
+            PlayerActivity.start(this, track) // UI слой
         }
 
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -210,6 +188,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    // Выполнение поиска через интерактор (связь с Domain слоем)
     private fun performSearch(query: String) {
         if (query.trim().isEmpty()) {
             showEmptyState()
@@ -219,26 +198,84 @@ class SearchActivity : AppCompatActivity() {
         showLoadingState()
         hideKeyboard()
 
-        iTunesApiService.search(query).enqueue(object : Callback<SearchResponse> {
-            override fun onResponse(call: Call<SearchResponse>, response: Response<SearchResponse>) {
-                if (response.isSuccessful && response.body() != null) {
-                    val tracks = response.body()!!.results
-                    if (tracks.isEmpty()) {
-                        showEmptyResultsState()
-                    } else {
-                        showTracks(tracks)
-                    }
-                } else {
-                    showErrorState()
-                }
-            }
-
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                showErrorState()
-            }
-        })
+        // Используем интерактор для поиска треков
+        tracksInteractor.searchTracks(query, this)
     }
 
+    // Callback метод из TracksConsumer (обработка результатов поиска)
+    override fun consume(tracks: List<Track>) {
+        // Track - доменная модель из domain.models
+        runOnUiThread {
+            if (tracks.isEmpty()) {
+                showEmptyResultsState()
+            } else {
+                showTracks(tracks) // Передаем доменные модели в UI
+            }
+        }
+    }
+
+    // Debounce для кликов (UI логика)
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    // Debounce для поиска (UI логика)
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    // Сохранение состояния (UI логика)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SEARCH_QUERY_KEY, searchQuery)
+    }
+
+    // Восстановление состояния (UI логика)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        searchQuery = savedInstanceState.getString(SEARCH_QUERY_KEY, "")
+        searchInput.setText(searchQuery)
+        clearButton.isVisible = searchQuery.isNotEmpty()
+    }
+
+    // Настройка истории поиска (UI логика + связь с Domain слоем)
+    private fun setupHistoryViews() {
+        // Адаптер для истории (такой же, как для результатов)
+        historyAdapter = TrackAdapter(emptyList()) { track ->
+            // Клик по треку в истории с debounce
+            if (clickDebounce()) {
+                // Клик по треку в истории:
+                // Используем интерактор для добавления трека в историю
+                tracksInteractor.addTrackToHistory(track)
+
+                PlayerActivity.start(this, track) // переход плеер трека
+                updateHistoryVisibility()
+            }
+        }
+
+        // Настройка RecyclerView
+        historyRecyclerView.layoutManager = LinearLayoutManager(this)
+        historyRecyclerView.adapter = historyAdapter
+
+        // Обработчик для кнопки очистки истории
+        clearHistoryButton.setOnClickListener {
+            if (clickDebounce()) {
+
+                tracksInteractor.clearSearchHistory()
+
+                updateHistoryVisibility()
+            }
+        }
+
+    }
+
+    // Методы отображения различных состояний (UI логика)
     private fun showLoadingState() {
         progressBar.visibility = View.VISIBLE
         searchHistoryView.visibility = View.GONE
@@ -271,8 +308,6 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.visibility = View.GONE
         errorInternetView.visibility = View.VISIBLE
         errorSearchView.visibility = View.GONE
-        //searchHistoryView.visibility = View.VISIBLE
-        //searchHistoryView.setOnClickListener { performSearch(searchQuery) }
 
         // Устанавливаем обработчик для кнопки обновления
         refreshButton.setOnClickListener {
@@ -291,79 +326,25 @@ class SearchActivity : AppCompatActivity() {
         adapter.updateTracks(emptyList()) // Обновляем видимость истории (если поле в фокусе)
     }
 
-    private fun setupHistoryViews() {
-        // Адаптер для истории (такой же, как для результатов)
-        historyAdapter = TrackAdapter(emptyList()) { track ->
-
-            // Клик по треку в истории с debounce
-            if (clickDebounce()) {
-                // Клик по треку в истории:
-                //searchInput.setText("${track.trackName} ${track.artistName}") // не надо ввод в поиск
-                searchHistory.addTrack(track) // Обновляем позицию трека в истории (надо ли в перспективе?)
-                PlayerActivity.start(this, track) // переход плеер трека
-
-                updateHistoryVisibility()
-            }
-        }
-
-        // Настройка RecyclerView
-        historyRecyclerView.layoutManager = LinearLayoutManager(this)
-        historyRecyclerView.adapter = historyAdapter
-
-        // Обработчик для кнопки очистки истории с debounce
-        clearHistoryButton.setOnClickListener {
-            if (clickDebounce()) {
-                Log.d("SearchActivity", "Нажатие кнопки очистки истории")
-                searchHistory.clearHistory()
-                Log.d("SearchActivity", "История очищена. Новый размер: ${searchHistory.getHistory().size}")
-
-                historyAdapter.updateTracks(emptyList()) // Обновляем адаптер
-                clearHistoryButton.visibility = View.GONE
-                searchHistoryView.visibility = View.GONE
-
-                updateHistoryVisibility()
-            }
-        }
-
-    }
-
+    // Обновление видимости истории (UI логика + связь с Domain слоем)
     private fun updateHistoryVisibility() {
-        val showHistory = searchInput.text.isEmpty() && // Поле пустое
-                searchInput.hasFocus() && // Поле в фокусе
-                searchHistory.getHistory().isNotEmpty() // Есть сохранённые треки
-
-        // Всегда показываем кнопку, если есть история
-        clearHistoryButton.visibility = if (searchHistory.getHistory().isNotEmpty()) View.VISIBLE else View.GONE
-
-        // Управляем видимостью только контейнера с историей
-        searchHistoryView.visibility = if (showHistory) View.VISIBLE else View.GONE
-
-        // Обновляем список
-        if (showHistory) {
-            historyAdapter.updateTracks(searchHistory.getHistory())
-        } else {
-            historyAdapter.updateTracks(emptyList()) // Если истории нет, передаем пустой список
-        }
-
-        /*
-        Log.d("SearchActivity", "Clear button enabled: ${clearHistoryButton.isEnabled}")
-        Log.d("SearchActivity", "Clear button visibility: ${clearHistoryButton.visibility}")
-        clearHistoryButton.post {
-            Log.d("SearchActivity", "Clear button width: ${clearHistoryButton.width}px")
-        }
-
-        clearHistoryButton.setOnClickListener {
-            Log.d("SearchActivity", "Нажатие кнопки очистки истории 2")
-            searchHistory.clearHistory()
-            Log.d("SearchActivity", "История очищена. Новый размер 2: ${searchHistory.getHistory().size}")
-
-            historyAdapter.updateTracks(emptyList()) // Обновляем адаптер
-            clearHistoryButton.visibility = View.GONE
-            searchHistoryView.visibility = View.GONE
-
-            updateHistoryVisibility()
-        }
-        */
+        // Всегда проверяем есть ли история, независимо от состояния поля
+        tracksInteractor.getSearchHistory(object : TracksInteractor.TracksConsumer {
+            override fun consume(tracks: List<Track>) {
+                runOnUiThread {
+                    if (tracks.isNotEmpty()) {
+                        // Есть история - показываем всё:
+                        searchHistoryView.visibility = View.VISIBLE  // Весь контейнер
+                        historyAdapter.updateTracks(tracks)          // Список треков
+                        clearHistoryButton.visibility = View.VISIBLE // Кнопку очистки
+                    } else {
+                        // Нет истории - скрываем всё:
+                        searchHistoryView.visibility = View.GONE
+                        clearHistoryButton.visibility = View.GONE
+                    }
+                }
+            }
+        })
     }
 
     companion object {

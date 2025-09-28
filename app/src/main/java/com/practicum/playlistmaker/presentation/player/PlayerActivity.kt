@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.player
 
 import android.content.Context
 import android.content.Intent
@@ -17,6 +17,9 @@ import java.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
+
 
 class PlayerActivity : AppCompatActivity() {
     private var playerState = STATE_DEFAULT // Текущее состояние плеера

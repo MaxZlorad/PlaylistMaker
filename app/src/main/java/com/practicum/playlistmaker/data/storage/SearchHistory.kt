@@ -1,9 +1,9 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.data.storage
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.data.dto.TrackDto
 
 class SearchHistory(
     // SharedPreferences - хранилище ключ-значение в Android
@@ -16,14 +16,14 @@ class SearchHistory(
     private val gson = Gson()
 
     // Временное хранилище треков в памяти
-    private val historyList = mutableListOf<Track>()
+    private val historyList = mutableListOf<TrackDto>()
 
     companion object {
         // Ключ для хранения истории в SharedPreferences
         private const val HISTORY_KEY = "search_history_key"
     }
 
-    fun addTrack(track: Track) {
+    fun addTrack(track: TrackDto) {
         // Удаляем трек, если он уже есть в истории (по trackId)
         historyList.removeAll { it.trackId == track.trackId }
 
@@ -39,7 +39,7 @@ class SearchHistory(
         saveHistory()
     }
 
-    fun getHistory(): List<Track> {
+    fun getHistory(): List<TrackDto> {
         return historyList.toList() // Возвращаем копию списка, чтобы избежать внешних изменений
     }
 
@@ -55,11 +55,19 @@ class SearchHistory(
 
     fun loadHistory() {
         val json = sharedPreferences.getString(HISTORY_KEY, null) ?: return // Получаем JSON-строку из хранилища
-        val type = object : TypeToken<List<Track>>() {}.type // Создаем тип для десериализации List<Track>
-        val loaded = gson.fromJson<List<Track>>(json, type) // Преобразуем строку обратно в List<Track>
+        val type = object : TypeToken<List<TrackDto>>() {}.type // Создаем тип для десериализации List<Track>
 
-        historyList.clear() //  Очищаем весь список
-        historyList.addAll(loaded) // Загружаем весь список
+        try {
+            val loaded = gson.fromJson<List<TrackDto>>(
+                json,
+                type
+            ) // Преобразуем строку обратно в List<TrackDto>
+
+            historyList.clear() //  Очищаем весь список
+            historyList.addAll(loaded) // Загружаем весь список
+        } catch (e: Exception) {
+            // err
+        }
     }
 
     /**
