@@ -20,7 +20,8 @@ class SettingsActivity : AppCompatActivity() {
 
         Log.d("SettingsActivity", "onCreate started")
 
-        settingsInteractor = Creator.provideSettingsInteractor(this)
+        //settingsInteractor = Creator.provideSettingsInteractor(this)
+        settingsInteractor = Creator.provideSettingsInteractor()
         Log.d("SettingsActivity", "Interactor created")
 
         setupToolbar()

@@ -10,7 +10,7 @@ class SearchHistory(
     private val sharedPreferences: SharedPreferences,
 
     // Максимальный размер истории (по умолчанию 10 треков)
-    private val maxHistorySize: Int = 10
+    //private val maxHistorySize: Int = 10
 ) {
     // Gson для преобразования объектов в JSON и обратно
     private val gson = Gson()
@@ -18,39 +18,28 @@ class SearchHistory(
     // Временное хранилище треков в памяти
     private val historyList = mutableListOf<TrackDto>()
 
-    companion object {
-        // Ключ для хранения истории в SharedPreferences
-        private const val HISTORY_KEY = "search_history_key"
-    }
-
+    // добавляем трек без логики
     fun addTrack(track: TrackDto) {
-        // Удаляем трек, если он уже есть в истории (по trackId)
-        historyList.removeAll { it.trackId == track.trackId }
-
-        // Добавляем новый трек в начало списка
-        historyList.add(0, track)
-
-        // Если превышен лимит - удаляем самые старые треки
-        if (historyList.size > maxHistorySize) {
-            historyList.subList(maxHistorySize, historyList.size).clear()
-        }
-
-        // Сохраняем изменения
+        historyList.add(track)
         saveHistory()
     }
 
+    // возвращаем историю
     fun getHistory(): List<TrackDto> {
-        return historyList.toList() // Возвращаем копию списка, чтобы избежать внешних изменений
+        return historyList.toList()
     }
 
+    // очищаем
     fun clearHistory() {
-        // Очищаем список в памяти
         historyList.clear()
+        saveHistory()
+    }
 
-        // Удаляем данные из SharedPreferences
-        sharedPreferences.edit()
-            .remove(HISTORY_KEY)
-            .apply()
+    // сохраняем внешний список
+    fun saveHistory(tracks: List<TrackDto>) {
+        historyList.clear()
+        historyList.addAll(tracks)
+        saveHistory()
     }
 
     fun loadHistory() {
@@ -58,10 +47,7 @@ class SearchHistory(
         val type = object : TypeToken<List<TrackDto>>() {}.type // Создаем тип для десериализации List<Track>
 
         try {
-            val loaded = gson.fromJson<List<TrackDto>>(
-                json,
-                type
-            ) // Преобразуем строку обратно в List<TrackDto>
+            val loaded = gson.fromJson<List<TrackDto>>(json,type) // Преобразуем строку обратно в List<TrackDto>
 
             historyList.clear() //  Очищаем весь список
             historyList.addAll(loaded) // Загружаем весь список
@@ -70,9 +56,7 @@ class SearchHistory(
         }
     }
 
-    /**
-     * Сохраняет текущую историю в SharedPreferences.
-     */
+    //Сохраняет текущую историю в SharedPreferences
     private fun saveHistory() {
         // Преобразуем список треков в JSON
         val json = gson.toJson(historyList) // Весь список
@@ -81,5 +65,10 @@ class SearchHistory(
         sharedPreferences.edit()
             .putString(HISTORY_KEY, json) // Сохраняем как одну строку
             .apply()
+    }
+
+    companion object {
+        // Ключ для хранения истории в SharedPreferences
+        private const val HISTORY_KEY = "search_history_key"
     }
 }

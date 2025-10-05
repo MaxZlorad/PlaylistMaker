@@ -28,7 +28,8 @@ class MainActivity : AppCompatActivity() {
         val settingsButton: Button = findViewById(R.id.settingsButton)
 
         // Применяем сохраненную тему при запуске
-        val settingsInteractor = Creator.provideSettingsInteractor(this)
+        //val settingsInteractor = Creator.provideSettingsInteractor(this)
+        val settingsInteractor = Creator.provideSettingsInteractor()
         val darkTheme = settingsInteractor.getDarkTheme()
 
         AppCompatDelegate.setDefaultNightMode(

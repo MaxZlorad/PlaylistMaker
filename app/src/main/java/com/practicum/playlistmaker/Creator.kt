@@ -1,9 +1,9 @@
 package com.practicum.playlistmaker
 
 import android.content.Context
-import android.util.Log
 import com.practicum.playlistmaker.data.network.ItunesApiClient
-import com.practicum.playlistmaker.data.repository.TracksRepositoryImpl
+import com.practicum.playlistmaker.data.repository.HistoryRepositoryImpl
+import com.practicum.playlistmaker.data.repository.SearchRepositoryImpl
 import com.practicum.playlistmaker.data.storage.SearchHistory
 import com.practicum.playlistmaker.domain.api.SettingsInteractor
 import com.practicum.playlistmaker.domain.api.TracksInteractor
@@ -12,31 +12,35 @@ import com.practicum.playlistmaker.data.repository.SettingsRepositoryImpl
 import com.practicum.playlistmaker.domain.impl.TracksInteractorImpl
 
 object Creator {
+    private var appContext: Context? = null
+
+    // Устанавливаем context при запуске приложения
+    fun setContext(context: Context) {
+        appContext = context.applicationContext
+    }
+
+    private fun requireContext(): Context {
+        return appContext ?: throw IllegalStateException("Context not initialized. Call Creator.setContext() first.")
+    }
 
     // Предоставляем интерактор для работы с треками
-    fun provideTracksInteractor(context: Context): TracksInteractor {
+    fun provideTracksInteractor(): TracksInteractor {
+        val searchHistory = SearchHistory(requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE))
+            .apply { loadHistory() }
+
         return TracksInteractorImpl(
-            TracksRepositoryImpl(
-                ItunesApiClient.apiService,
-                SearchHistory(context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE))
-                    .apply { loadHistory() } // Загружаем историю при создании
-            )
+            searchRepository = SearchRepositoryImpl(ItunesApiClient.apiService),
+            historyRepository = HistoryRepositoryImpl(searchHistory)
         )
     }
 
     // Предоставляем интерактор для работы с настройками
-    fun provideSettingsInteractor(context: Context): SettingsInteractor {
-        Log.d("Creator", "Creating SettingsInteractor")
-        return try {
-            val interactor = SettingsInteractorImpl(
-                SettingsRepositoryImpl(context.getSharedPreferences("app_settings", Context.MODE_PRIVATE)),
-                context
-            )
-            Log.d("Creator", "SettingsInteractor created successfully")
-            interactor
-        } catch (e: Exception) {
-            Log.e("Creator", "Error creating SettingsInteractor", e)
-            throw e
-        }
+    fun provideSettingsInteractor(): SettingsInteractor {
+        return SettingsInteractorImpl(
+            SettingsRepositoryImpl(
+                requireContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+            ),
+            requireContext()
+        )
     }
 }

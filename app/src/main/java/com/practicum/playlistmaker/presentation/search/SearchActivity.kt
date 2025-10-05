@@ -1,6 +1,9 @@
 package com.practicum.playlistmaker.presentation.search
 
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -64,7 +67,8 @@ class SearchActivity : AppCompatActivity(), TracksInteractor.TracksConsumer {
 
 
         // Инициализируем интерактор через Creator (связь с Domain слоем)
-        tracksInteractor = Creator.provideTracksInteractor(this)
+        //tracksInteractor = Creator.provideTracksInteractor(this)
+        tracksInteractor = Creator.provideTracksInteractor()
 
         // Инициализация Runnable для отложенного поиска
         searchRunnable = Runnable { performSearch(searchQuery) }
@@ -195,11 +199,26 @@ class SearchActivity : AppCompatActivity(), TracksInteractor.TracksConsumer {
             return
         }
 
+        if (!isNetworkAvailable()) {
+            showErrorState()
+            return
+        }
+
         showLoadingState()
         hideKeyboard()
 
         // Используем интерактор для поиска треков
         tracksInteractor.searchTracks(query, this)
+    }
+
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        return capabilities != null &&
+                (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
     }
 
     // Callback метод из TracksConsumer (обработка результатов поиска)

@@ -54,8 +54,8 @@ class PlayerActivity : AppCompatActivity() {
                     currentTimeView.text = SimpleDateFormat("mm:ss", Locale.getDefault())
                         .format(currentPosition)
 
-                    // Планируем следующее обновление через 300 мс
-                    handler.postDelayed(this, 300)
+                    //handler.postDelayed(this, 300) // Планируем следующее обновление через 300 мс
+                    handler.post(this)
                 }
             }
         }
@@ -211,7 +211,6 @@ class PlayerActivity : AppCompatActivity() {
             STATE_PLAYING -> {
                 pausePlayer() // Если играет - ставим на паузу
             }
-
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer() // Если готов или на паузе - запускаем
             }
