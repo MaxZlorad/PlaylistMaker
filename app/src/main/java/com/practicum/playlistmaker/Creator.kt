@@ -4,7 +4,6 @@ import android.content.Context
 import com.practicum.playlistmaker.data.network.ItunesApiClient
 import com.practicum.playlistmaker.data.repository.HistoryRepositoryImpl
 import com.practicum.playlistmaker.data.repository.SearchRepositoryImpl
-import com.practicum.playlistmaker.data.storage.SearchHistory
 import com.practicum.playlistmaker.domain.api.SettingsInteractor
 import com.practicum.playlistmaker.domain.api.TracksInteractor
 import com.practicum.playlistmaker.domain.impl.SettingsInteractorImpl
@@ -20,17 +19,20 @@ object Creator {
     }
 
     private fun requireContext(): Context {
-        return appContext ?: throw IllegalStateException("Context not initialized. Call Creator.setContext() first.")
+        return appContext ?: throw IllegalStateException(
+            "Context not initialized. Call Creator.setContext() first.")
     }
 
     // Предоставляем интерактор для работы с треками
     fun provideTracksInteractor(): TracksInteractor {
-        val searchHistory = SearchHistory(requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE))
-            .apply { loadHistory() }
+        /*val searchHistory = SearchHistory(requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE))
+            .apply { loadHistory() }*/
 
         return TracksInteractorImpl(
             searchRepository = SearchRepositoryImpl(ItunesApiClient.apiService),
-            historyRepository = HistoryRepositoryImpl(searchHistory)
+            historyRepository = HistoryRepositoryImpl(
+                requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            )
         )
     }
 
