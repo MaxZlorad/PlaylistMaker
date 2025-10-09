@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.player
 
 import android.content.Context
 import android.content.Intent
@@ -17,6 +17,9 @@ import java.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
+
 
 class PlayerActivity : AppCompatActivity() {
     private var playerState = STATE_DEFAULT // Текущее состояние плеера
@@ -51,8 +54,8 @@ class PlayerActivity : AppCompatActivity() {
                     currentTimeView.text = SimpleDateFormat("mm:ss", Locale.getDefault())
                         .format(currentPosition)
 
-                    // Планируем следующее обновление через 300 мс
-                    handler.postDelayed(this, 300)
+                    //handler.postDelayed(this, 300) // Планируем следующее обновление через 300 мс
+                    handler.post(this)
                 }
             }
         }
@@ -208,7 +211,6 @@ class PlayerActivity : AppCompatActivity() {
             STATE_PLAYING -> {
                 pausePlayer() // Если играет - ставим на паузу
             }
-
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer() // Если готов или на паузе - запускаем
             }

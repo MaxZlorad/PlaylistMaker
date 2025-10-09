@@ -1,25 +1,36 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.settings
 
-
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.api.SettingsInteractor
 
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var settingsInteractor: SettingsInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+
+        Log.d("SettingsActivity", "onCreate started")
+
+        //settingsInteractor = Creator.provideSettingsInteractor(this)
+        settingsInteractor = Creator.provideSettingsInteractor()
+        Log.d("SettingsActivity", "Interactor created")
 
         setupToolbar()
         setupThemeSwitcher()
         setupShareButton()
         setupSupportButton()
         setupTermsButton()
+
+        Log.d("SettingsActivity", "onCreate completed")
     }
 
     private fun setupToolbar() {
@@ -31,37 +42,33 @@ class SettingsActivity : AppCompatActivity() {
     private fun setupThemeSwitcher() {
         val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
 
-        themeSwitch.isChecked = (application as App).darkTheme
+        // Используем интерактор для получения текущей темы
+        themeSwitch.isChecked = settingsInteractor.getDarkTheme()
+
         themeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            (application as App).switchTheme(isChecked)
+            // Используем интерактор для изменения темы
+            settingsInteractor.setDarkTheme(isChecked)
         }
     }
 
     private fun setupShareButton() {
         findViewById<MaterialTextView>(R.id.shareTextView).setOnClickListener {
-            Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message))
-                startActivity(Intent.createChooser(this, null))
-            }
+            // Используем интерактор для приложения
+            settingsInteractor.shareApp()
         }
     }
 
     private fun setupSupportButton() {
         findViewById<MaterialTextView>(R.id.supportTextView).setOnClickListener {
-            Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
-                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_subject))
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.support_message))
-                startActivity(Intent.createChooser(this, getString(R.string.choose_email_client)))
-            }
+            // Используем интерактор для связи с поддержкой
+            settingsInteractor.support()
         }
     }
 
     private fun setupTermsButton() {
         findViewById<MaterialTextView>(R.id.termsTextView).setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_url))))
+            // Используем интерактор для открытия условий использования
+            settingsInteractor.openTerms()
         }
     }
 }

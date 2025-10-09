@@ -1,6 +1,7 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.library
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.practicum.playlistmaker.R
 
 class MediaLibraryActivity : AppCompatActivity() {
 
