@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.MainMenu.Button" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginBottom">@dimen/padding_medium</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/text_max</item>
+        <item name="cornerRadius">@dimen/button_corner_radius</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/padding_small</item>
+        <item name="iconTint">@color/text_color</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:shadowColor">@android:color/transparent</item>
+    </style>
+    <style name="SettingsItemStyle" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/settings_text</item>
+        <item name="android:paddingHorizontal">@dimen/padding_horizontal</item>
+        <item name="android:paddingVertical">@dimen/padding_vertical</item>
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+    <style name="ToolbarStyle" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textColor">@color/panel_header</item>
+        <item name="android:textSize">@dimen/text_max</item>
+        <item name="navigationIcon">@drawable/ic_arrow_back</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+    <style name="SearchElementStyle" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="SongTitleStyle">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+    <style name="InfoStyle">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:textColor">@color/gray</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+    <style name="ErrorsTextView">
+        <item name="android:textSize">@dimen/text_medium_max</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">102dp</item>
+        <item name="android:drawablePadding">@dimen/padding_medium</item>
+    </style>
+    <style name="ClearButton" parent="Widget.MaterialComponents.Button">
+        <!-- Размеры и позиционирование -->
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">@dimen/padding_medium</item>
+        <item name="android:layout_marginBottom">@dimen/padding_medium</item>
+        <item name="android:paddingHorizontal">@dimen/padding_medium</item>
+        <item name="android:paddingVertical">@dimen/padding_micro</item>
+        <!-- Цвета -->
+        <item name="backgroundTint">@color/black_white</item>  <!-- Фон кнопки -->
+        <item name="android:textColor">@color/white_black</item> <!-- Цвет текста -->
+        <!-- Текст -->
+        <item name="android:textSize">@dimen/text_medium_small</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <!-- Форма -->
+        <item name="cornerRadius">54dp</item> <!-- Скругление углов -->
+        <!-- Эффекты -->
+        <item name="rippleColor">@color/white</item> <!-- Цвет ripple-эффекта -->
+        <item name="android:elevation">2dp</item>
+        <item name="android:stateListAnimator">@null</item> <!-- Отключаем анимацию по умолчанию -->
+        <!-- Дополнительно -->
+        <item name="android:minWidth">120dp</item> <!-- Минимальная ширина -->
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+    <style name="PlayInfoStyle">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/text_small_medium</item>
+        <item name="android:textColor">@color/black_white</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+</resources>
