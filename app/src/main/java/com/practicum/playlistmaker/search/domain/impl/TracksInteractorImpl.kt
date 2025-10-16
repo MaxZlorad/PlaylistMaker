@@ -22,7 +22,7 @@ class TracksInteractorImpl(
         return historyRepository.getSearchHistory()
     }
 
-    override fun addTrackToHistory(track: Track) {
+    override suspend fun addTrackToHistory(track: Track) {
 
         // логика
         val currentHistory = historyRepository.getSearchHistory().toMutableList()
@@ -44,7 +44,7 @@ class TracksInteractorImpl(
 
     }
 
-    override fun clearSearchHistory() {
+    override suspend fun clearSearchHistory() {
         historyRepository.clearSearchHistory()
     }
 }

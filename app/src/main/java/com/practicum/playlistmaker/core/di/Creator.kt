@@ -9,7 +9,10 @@ import com.practicum.playlistmaker.core.domain.api.TracksInteractor
 import com.practicum.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.practicum.playlistmaker.settings.data.repository.SettingsRepositoryImpl
 import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
-import com.practicum.playlistmaker.settings.data.repository.SettingsConstants
+import com.practicum.playlistmaker.settings.data.repository.ExternalNavigator
+import com.practicum.playlistmaker.settings.data.repository.SharingConstants
+import com.practicum.playlistmaker.settings.domain.api.SharingInteractor
+import com.practicum.playlistmaker.settings.domain.impl.SharingInteractorImpl
 
 object Creator {
     private var appContext: Context? = null
@@ -21,7 +24,8 @@ object Creator {
 
     private fun requireContext(): Context {
         return appContext ?: throw IllegalStateException(
-            "Context not initialized. Call Creator.setContext() first.")
+            "Context not initialized. Call Creator.setContext() first."
+        )
     }
 
     // Предоставляем интерактор для работы с треками
@@ -29,7 +33,10 @@ object Creator {
         return TracksInteractorImpl(
             searchRepository = SearchRepositoryImpl(ItunesApiClient.apiService),
             historyRepository = HistoryRepositoryImpl(
-                requireContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                requireContext().getSharedPreferences(
+                    SettingsConstants.APP_PREFS_NAME,
+                    Context.MODE_PRIVATE
+                )
             )
         )
     }
@@ -39,6 +46,13 @@ object Creator {
         val settingsRepository = SettingsRepositoryImpl(
             context.getSharedPreferences(SettingsConstants.APP_SETTINGS_NAME, Context.MODE_PRIVATE)
         )
-        return SettingsInteractorImpl(settingsRepository, context)
+        return SettingsInteractorImpl(settingsRepository)
+    }
+
+    fun provideSharingInteractor(context: Context): SharingInteractor {
+        // Инициализировать константы один раз при создании
+        SharingConstants.initialize(context)
+        val externalNavigator = ExternalNavigator(context)
+        return SharingInteractorImpl(externalNavigator)  // Без context!
     }
 }

@@ -1,9 +1,6 @@
 package com.practicum.playlistmaker.settings.domain.impl
 
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import com.practicum.playlistmaker.settings.domain.api.SettingsInteractor
 import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
 import kotlinx.coroutines.Dispatchers
@@ -12,8 +9,10 @@ import kotlinx.coroutines.withContext
 class SettingsInteractorImpl(
     // Принимаем SettingsRepository через конструктор
     // Это соответствует принципу Dependency Injection
-    private val settingsRepository: SettingsRepository,
-    private val context: Context) : SettingsInteractor {
+    private val settingsRepository: SettingsRepository
+    //, private val context: Context
+) : SettingsInteractor {
+
 
     // Получаем состояние темной темы через репозиторий
     // Используем корутины для асинхронной работы
@@ -29,7 +28,7 @@ class SettingsInteractorImpl(
         // Interactor не должен знать детали реализации хранения
         settingsRepository.setDarkTheme(enabled)
     }
-
+/*
     // Методы для работы с внешними приложениями
     override suspend fun shareApp() = withContext(Dispatchers.Main) {
         val intent = Intent(Intent.ACTION_SEND).apply {
@@ -53,5 +52,6 @@ class SettingsInteractorImpl(
             data = Uri.parse("https://example.com/terms")
         }
         context.startActivity(intent)
-    }
+    }*/
+
 }

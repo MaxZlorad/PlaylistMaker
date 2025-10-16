@@ -21,11 +21,9 @@ class HistoryRepositoryImpl(
 
     override fun getSearchHistory(): List<Track> {
         return historyList.map { it.toTrack() }
-        //return searchHistory.getHistory().map { it.toTrack() }
     }
 
     override fun saveSearchHistory(tracks: List<Track>) {
-        //searchHistory.saveHistory(tracks.map { it.toTrackDto() })
         historyList.clear()
         historyList.addAll(tracks.map { it.toTrackDto() })
         saveHistory()
@@ -34,7 +32,6 @@ class HistoryRepositoryImpl(
     override fun clearSearchHistory() {
         historyList.clear()
         saveHistory()
-        //searchHistory.clearHistory()
     }
 
     fun loadHistory() {

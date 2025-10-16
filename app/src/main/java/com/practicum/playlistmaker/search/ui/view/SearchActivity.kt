@@ -85,7 +85,7 @@ class SearchActivity : AppCompatActivity() {
         // Восстановление запроса при повороте экрана
         if (savedInstanceState != null) {
             val searchQuery = savedInstanceState.
-                getString(SearchConstants.SEARCH_QUERY_KEY, "")
+                getString(SearchActivityConstants.SEARCH_QUERY_KEY, "")
             searchInput.setText(searchQuery)
             clearButton.isVisible = searchQuery.isNotEmpty() //false
         }
@@ -239,7 +239,7 @@ class SearchActivity : AppCompatActivity() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, SearchConstants.CLICK_DEBOUNCE_DELAY)
+            handler.postDelayed({ isClickAllowed = true }, SearchActivityConstants.CLICK_DEBOUNCE_DELAY)
         }
         return current
     }
@@ -247,7 +247,7 @@ class SearchActivity : AppCompatActivity() {
     // Debounce для поиска (UI логика)
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SearchConstants.SEARCH_DEBOUNCE_DELAY)
+        handler.postDelayed(searchRunnable, SearchActivityConstants.SEARCH_DEBOUNCE_DELAY)
     }
 
     // Настройка истории поиска (UI логика + связь с Domain слоем)
@@ -341,7 +341,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SearchConstants.SEARCH_QUERY_KEY, searchInput.text.toString())
+        outState.putString(SearchActivityConstants.SEARCH_QUERY_KEY, searchInput.text.toString())
     }
 
     // Factory для ViewModel

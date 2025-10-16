@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.appbar.MaterialToolbar
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.core.domain.models.Track
-import com.practicum.playlistmaker.player.data.repository.PlayerConstants
+import com.practicum.playlistmaker.player.ui.view_model.PlayerConstants
 import com.practicum.playlistmaker.player.domain.models.PlaybackState
 import com.practicum.playlistmaker.player.ui.view_model.PlayerViewModel
 import java.text.SimpleDateFormat
@@ -97,8 +97,8 @@ class PlayerActivity : AppCompatActivity() {
         trackNameView.text = track.trackName
         artistNameView.text = track.artistName
 
-        // Форматирование времени трека (минуты:секунды)
-        currentTimeView.text = "00:00"  // Начальное
+        //currentTimeView.text = "00:00"
+        currentTimeView.text = viewModel.getFormattedTime(0L)// Начальное
 
         // Блок информации о продолжительности
         setupOptionalField(

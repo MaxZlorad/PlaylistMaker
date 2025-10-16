@@ -2,12 +2,12 @@ package com.practicum.playlistmaker.player.domain.models
 
 import com.practicum.playlistmaker.core.domain.models.Track
 
-sealed class PlaybackState {
-    object Default : PlaybackState()
-    data class Prepared(val track: Track) : PlaybackState()
-    object Playing : PlaybackState()
-    object Paused : PlaybackState()
-    object Stopped : PlaybackState()
-    object Completed : PlaybackState()
-    data class Error(val message: String) : PlaybackState()
+sealed interface PlaybackState {
+    data object Default : PlaybackState
+    data class Prepared(val track: Track) : PlaybackState
+    data object Playing : PlaybackState
+    data object Paused : PlaybackState
+    data object Stopped : PlaybackState
+    data object Completed : PlaybackState
+    data class Error(val message: String) : PlaybackState
 }

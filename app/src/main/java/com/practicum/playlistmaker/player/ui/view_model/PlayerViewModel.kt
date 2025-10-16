@@ -93,7 +93,7 @@ class PlayerViewModel : ViewModel() {
         progressJob = viewModelScope.launch {
             while (mediaPlayer.isPlaying) {
                 _currentPosition.value = mediaPlayer.currentPosition.toLong() // Взять позицию
-                delay(300)
+                delay(PlayerConstants.PROGRESS_UPDATE_DELAY)
             }
             // Обновляем позицию когда трек закончил играть
             if (!mediaPlayer.isPlaying) {

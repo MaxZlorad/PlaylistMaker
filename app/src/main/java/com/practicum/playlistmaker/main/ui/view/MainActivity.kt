@@ -8,7 +8,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.core.di.Creator
 import com.practicum.playlistmaker.library.ui.view.MediaLibraryActivity
 import com.practicum.playlistmaker.search.ui.view.SearchActivity
 import com.practicum.playlistmaker.settings.ui.view.SettingsActivity
@@ -22,6 +21,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.getThemeState { isDarkTheme ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isDarkTheme) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
+        }
 
         setContentView(R.layout.activity_main)
 
@@ -37,13 +43,6 @@ class MainActivity : AppCompatActivity() {
 
         setupClickListeners(searchButton, mediaLibraryButton, settingsButton)
     }
-
-    /*private fun applyTheme(darkTheme: Boolean) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkTheme) AppCompatDelegate.MODE_NIGHT_YES
-            else AppCompatDelegate.MODE_NIGHT_NO
-        )
-    }*/
 
     private fun setupClickListeners(
         searchButton: Button,

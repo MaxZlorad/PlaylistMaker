@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
-import com.practicum.playlistmaker.PlaylistMakerApp
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 
@@ -18,6 +17,13 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel.themeState.observe(this) { isDarkTheme ->
+            AppCompatDelegate.setDefaultNightMode(
+                if (isDarkTheme) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
+        }
 
         setContentView(R.layout.activity_settings)
         Log.d("SettingsActivity", "onCreate started")
@@ -44,11 +50,18 @@ class SettingsActivity : AppCompatActivity() {
             val themeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitch)
 
             // Устанавливаем текущее состояние темы
-            themeSwitch.isChecked = (application as PlaylistMakerApp).darkTheme
+            //themeSwitch.isChecked = (application as PlaylistMakerApp).darkTheme
+
+            // Подписываемся на состояние темы из ViewModel
+            viewModel.themeState.observe(this) { isDarkTheme ->
+                themeSwitch.isChecked = isDarkTheme
+            }
 
             themeSwitch.setOnCheckedChangeListener { _, isChecked ->
                 // Меняем тему сразу через Application
-                (application as PlaylistMakerApp).switchTheme(isChecked)
+                //(application as PlaylistMakerApp).switchTheme(isChecked)
+                // Меняем тему через ViewModel
+                viewModel.setDarkTheme(isChecked)
             }
 
             Log.d("SettingsActivity", "setupThemeSwitcher completed")
