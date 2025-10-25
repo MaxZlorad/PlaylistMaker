@@ -10,7 +10,6 @@ import com.practicum.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.practicum.playlistmaker.settings.data.repository.SettingsRepositoryImpl
 import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.settings.data.repository.ExternalNavigator
-import com.practicum.playlistmaker.settings.data.repository.SharingConstants
 import com.practicum.playlistmaker.settings.domain.api.SharingInteractor
 import com.practicum.playlistmaker.settings.domain.impl.SharingInteractorImpl
 
@@ -51,7 +50,6 @@ object Creator {
 
     fun provideSharingInteractor(context: Context): SharingInteractor {
         // Инициализировать константы один раз при создании
-        SharingConstants.initialize(context)
         val externalNavigator = ExternalNavigator(context)
         return SharingInteractorImpl(externalNavigator)  // Без context!
     }

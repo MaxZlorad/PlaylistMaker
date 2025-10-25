@@ -8,8 +8,5 @@ class PlaylistMakerApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Creator.setContext(this)
-
-        // Инициализация sharing константы
-        com.practicum.playlistmaker.settings.data.repository.SharingConstants.initialize(this)
     }
 }

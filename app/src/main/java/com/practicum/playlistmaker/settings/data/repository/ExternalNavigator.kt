@@ -3,32 +3,41 @@ package com.practicum.playlistmaker.settings.data.repository
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.practicum.playlistmaker.settings.domain.models.EmailData
+import com.practicum.playlistmaker.R
 
 class ExternalNavigator(private val context: Context) {
 
-    fun shareLink(text: String) {
+    fun shareLink() {
+        val shareText = context.getString(R.string.share_message)
+
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, text)
+            putExtra(Intent.EXTRA_TEXT, shareText)
         }
         context.startActivity(Intent.createChooser(intent, null))
     }
 
-    fun openLink(url: String) {
+    fun openLink() {
+        val termsUrl = context.getString(R.string.terms_url)
+
         val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse(url)
+            data = Uri.parse(termsUrl)
         }
         context.startActivity(intent)
     }
 
-    fun openEmail(emailData: EmailData) {
+    fun openEmail() {
+        val supportEmail = context.getString(R.string.support_email)
+        val supportSubject = context.getString(R.string.support_subject)
+        val supportMessage = context.getString(R.string.support_message)
+        val chooseEmailClient = context.getString(R.string.choose_email_client)
+
         val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:${emailData.email}")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf(emailData.email))
-            putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
-            putExtra(Intent.EXTRA_TEXT, emailData.message)
+            data = Uri.parse("mailto:$supportEmail")
+            putExtra(Intent.EXTRA_EMAIL, arrayOf(supportEmail))
+            putExtra(Intent.EXTRA_SUBJECT, supportSubject)
+            putExtra(Intent.EXTRA_TEXT, supportMessage)
         }
-        context.startActivity(Intent.createChooser(intent, SharingConstants.CHOOSE_EMAIL_CLIENT))
+        context.startActivity(Intent.createChooser(intent, chooseEmailClient))
     }
 }
