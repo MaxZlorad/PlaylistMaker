@@ -1,21 +1,25 @@
 package com.practicum.playlistmaker.settings.domain.impl
 
-import com.practicum.playlistmaker.settings.data.repository.ExternalNavigator
+import com.practicum.playlistmaker.settings.domain.api.ExternalNavigator
 import com.practicum.playlistmaker.settings.domain.api.SharingInteractor
+import com.practicum.playlistmaker.settings.domain.models.ExternalNavigationEvent
 
-class SharingInteractorImpl(
-    private val externalNavigator: ExternalNavigator
-) : SharingInteractor {
+class SharingInteractorImpl : SharingInteractor {
 
-    override fun shareApp() {
-        externalNavigator.shareLink()
+    override fun getShareAppEvent(): ExternalNavigationEvent {
+        return ExternalNavigationEvent.ShareApp("Скачайте крутое приложение для создания плейлистов!")
     }
 
-    override fun openTerms() {
-        externalNavigator.openLink()
+    override fun getOpenTermsEvent(): ExternalNavigationEvent {
+        return ExternalNavigationEvent.OpenTerms("https://example.com/terms")
     }
 
-    override fun openSupport() {
-        externalNavigator.openEmail()
+    override fun getOpenSupportEvent(): ExternalNavigationEvent {
+        return ExternalNavigationEvent.OpenSupport(
+            supportEmail = "support@playlistmaker.com",
+            supportSubject = "Поддержка PlaylistMaker",
+            supportMessage = "Здравствуйте, у меня вопрос по приложению...",
+            chooseEmailClient = "Выберите email клиент"
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.core.domain.models
+package com.practicum.playlistmaker.search.domain.models
 
 import java.io.Serializable
 

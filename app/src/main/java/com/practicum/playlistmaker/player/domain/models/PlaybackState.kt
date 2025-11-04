@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.player.domain.models
 
-import com.practicum.playlistmaker.core.domain.models.Track
+import com.practicum.playlistmaker.search.domain.models.Track
 
 sealed interface PlaybackState {
     data object Default : PlaybackState

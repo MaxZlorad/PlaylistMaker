@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.core.domain.api.TracksInteractor
-import com.practicum.playlistmaker.core.domain.models.Track
+import com.practicum.playlistmaker.search.domain.api.TracksInteractor
+import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.launch
 
 class SearchViewModel(

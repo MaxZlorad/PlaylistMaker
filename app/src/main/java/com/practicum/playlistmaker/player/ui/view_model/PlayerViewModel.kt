@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.core.domain.models.Track
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.domain.models.PlaybackState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -12,9 +12,10 @@ import android.media.MediaPlayer
 import kotlinx.coroutines.Job
 import java.io.IOException
 
-class PlayerViewModel : ViewModel() {
+class PlayerViewModel(
+    private val mediaPlayer: MediaPlayer = MediaPlayer()) : ViewModel() {
 
-    private val mediaPlayer = MediaPlayer()
+    //private val mediaPlayer: MediaPlayer = MediaPlayer()
     private var progressJob: Job? = null
 
     private val _playbackState = MutableLiveData<PlaybackState>(PlaybackState.Default)

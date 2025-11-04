@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.search.ui.view_model
 
-import com.practicum.playlistmaker.core.domain.models.Track
+import com.practicum.playlistmaker.search.domain.models.Track
 
 sealed class SearchState {
     object Empty : SearchState()

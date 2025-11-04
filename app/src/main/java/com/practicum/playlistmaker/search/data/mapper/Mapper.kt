@@ -1,7 +1,7 @@
-package com.practicum.playlistmaker.core.data.mapper
+package com.practicum.playlistmaker.search.data.mapper
 
-import com.practicum.playlistmaker.core.data.dto.TrackDto
-import com.practicum.playlistmaker.core.domain.models.Track
+import com.practicum.playlistmaker.search.data.dto.TrackDto
+import com.practicum.playlistmaker.search.domain.models.Track
 
 fun TrackDto.toTrack(): Track {
     return Track(

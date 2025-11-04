@@ -28,30 +28,4 @@ class SettingsInteractorImpl(
         // Interactor не должен знать детали реализации хранения
         settingsRepository.setDarkTheme(enabled)
     }
-/*
-    // Методы для работы с внешними приложениями
-    override suspend fun shareApp() = withContext(Dispatchers.Main) {
-        val intent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, "Скачайте крутое приложение для создания плейлистов!")
-        }
-        context.startActivity(Intent.createChooser(intent, "Поделиться приложением"))
-    }
-
-    override suspend fun support() = withContext(Dispatchers.Main) {
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:support@playlistmaker.com")
-            putExtra(Intent.EXTRA_SUBJECT, "Поддержка PlaylistMaker")
-            putExtra(Intent.EXTRA_EMAIL, arrayOf("support@playlistmaker.com"))
-        }
-        context.startActivity(intent)
-    }
-
-    override suspend fun openTerms() = withContext(Dispatchers.Main) {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            data = Uri.parse("https://example.com/terms")
-        }
-        context.startActivity(intent)
-    }*/
-
 }

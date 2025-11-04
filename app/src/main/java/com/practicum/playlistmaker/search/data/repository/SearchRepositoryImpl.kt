@@ -1,14 +1,15 @@
 package com.practicum.playlistmaker.search.data.repository
 
-import com.practicum.playlistmaker.core.data.network.ItunesApiService
+import com.practicum.playlistmaker.search.data.network.ItunesApiService
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
-import com.practicum.playlistmaker.core.domain.models.Track
-import com.practicum.playlistmaker.core.data.mapper.toTrack
-import com.practicum.playlistmaker.core.data.mapper.toTracks
+import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.data.mapper.toTrack
+import com.practicum.playlistmaker.search.data.mapper.toTracks
 import retrofit2.awaitResponse
 
 class SearchRepositoryImpl(
-    private val apiService: ItunesApiService) : SearchRepository {
+    private val apiService: ItunesApiService
+) : SearchRepository {
 
     override suspend fun searchTracks(query: String): List<Track> {
         return try {

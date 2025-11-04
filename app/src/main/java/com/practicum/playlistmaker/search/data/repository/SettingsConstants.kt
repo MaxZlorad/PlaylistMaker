@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.core.di
+package com.practicum.playlistmaker.search.data.repository
 
 object SettingsConstants {
     const val APP_SETTINGS_NAME = "app_settings"
