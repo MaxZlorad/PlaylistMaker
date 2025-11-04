@@ -19,7 +19,7 @@ val viewModelModule = module {
     viewModel { SettingsViewModel(get(), get()) } // Оба интерфактора
 
     // Player
-    viewModel { PlayerViewModel() }//MediaPlayer создается с дефолтным значением
+    viewModel { PlayerViewModel(get()) }//MediaPlayer создается
 
     // MediaLibrary
     viewModel { MediaLibraryViewModel() }// Без зависимостей

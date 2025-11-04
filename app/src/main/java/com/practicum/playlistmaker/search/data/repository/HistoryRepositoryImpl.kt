@@ -3,22 +3,17 @@ package com.practicum.playlistmaker.search.data.repository
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.practicum.playlistmaker.di.NamedConstants.HISTORY_PREFS
 import com.practicum.playlistmaker.search.data.dto.TrackDto
 import com.practicum.playlistmaker.search.domain.api.HistoryRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.data.mapper.toTrack
 import com.practicum.playlistmaker.search.data.mapper.toTrackDto
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.qualifier.named
-import org.koin.dsl.module
 
 class HistoryRepositoryImpl(
-    //@Named(HISTORY_PREFS) private val sharedPreferences: SharedPreferences
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson // Gson через конструктор
 ) : HistoryRepository {
 
-    private val gson = Gson()
     private val historyList = mutableListOf<TrackDto>()
 
     init {

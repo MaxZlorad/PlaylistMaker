@@ -10,11 +10,10 @@ import org.koin.dsl.module
 
 val interactorModule = module {
 
-    single<TracksInteractor> { TracksInteractorImpl(get(), get()) }
+    factory<TracksInteractor> { TracksInteractorImpl(get(), get()) }
 
-    //single<SettingsInteractor> { SettingsInteractorImpl(settingsRepository = get()) }
+    factory<SharingInteractor> { SharingInteractorImpl(get()) }
 
-    single<SharingInteractor> { SharingInteractorImpl() }
-    single<SettingsInteractor> { SettingsInteractorImpl(get()) }
+    factory<SettingsInteractor> { SettingsInteractorImpl(get()) }
 
 }

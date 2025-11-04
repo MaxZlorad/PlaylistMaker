@@ -12,20 +12,6 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    /*// Search репозитории
-    single<SearchRepository> {
-        SearchRepositoryImpl(get())
-    }
-
-    // HistoryRepository
-    single<HistoryRepository> {
-        HistoryRepositoryImpl(get(named(HISTORY_PREFS)))
-    }
-
-    // SettingsRepository
-    single<SettingsRepository> {
-        SettingsRepositoryImpl(get(named(SETTINGS_PREFS)))
-    }*/
 
     // Search репозитории
     single<SearchRepository> {
@@ -35,7 +21,8 @@ val repositoryModule = module {
     // HistoryRepository
     single<HistoryRepository> {
         HistoryRepositoryImpl(
-            sharedPreferences = get(named(HISTORY_PREFS))
+            sharedPreferences = get(named(HISTORY_PREFS)),
+            gson = get()
         )
     }
 

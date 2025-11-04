@@ -10,8 +10,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import com.google.gson.Gson
 import com.practicum.playlistmaker.di.NamedConstants.HISTORY_PREFS
 import com.practicum.playlistmaker.di.NamedConstants.SETTINGS_PREFS
+import com.practicum.playlistmaker.player.data.repository.AudioPlayerImpl
+import com.practicum.playlistmaker.player.domain.api.AudioPlayer
 import com.practicum.playlistmaker.settings.data.repository.ExternalNavigatorImpl
 import com.practicum.playlistmaker.settings.domain.api.ExternalNavigator
+import com.practicum.playlistmaker.settings.domain.api.StringRepository
+import com.practicum.playlistmaker.settings.data.repository.StringRepositoryImpl
 import org.koin.core.qualifier.named
 
 val dataModule = module {
@@ -37,9 +41,16 @@ val dataModule = module {
 
     factory { Gson() }
 
+    single<StringRepository> {
+        StringRepositoryImpl(androidContext())
+    }
+
     // ExternalNavigator
     factory<ExternalNavigator> {
         ExternalNavigatorImpl(androidContext())
     }
+
+    // AudioPlayer
+    factory<AudioPlayer> { AudioPlayerImpl() }
 
 }

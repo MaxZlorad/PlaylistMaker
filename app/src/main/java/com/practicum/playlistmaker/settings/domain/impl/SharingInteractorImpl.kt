@@ -1,25 +1,27 @@
 package com.practicum.playlistmaker.settings.domain.impl
 
-import com.practicum.playlistmaker.settings.domain.api.ExternalNavigator
 import com.practicum.playlistmaker.settings.domain.api.SharingInteractor
 import com.practicum.playlistmaker.settings.domain.models.ExternalNavigationEvent
+import com.practicum.playlistmaker.settings.domain.api.StringRepository
 
-class SharingInteractorImpl : SharingInteractor {
+class SharingInteractorImpl(
+    private val stringRepository: StringRepository
+) : SharingInteractor {
 
     override fun getShareAppEvent(): ExternalNavigationEvent {
-        return ExternalNavigationEvent.ShareApp("Скачайте крутое приложение для создания плейлистов!")
+        return ExternalNavigationEvent.ShareApp(stringRepository.getShareMessage())
     }
 
     override fun getOpenTermsEvent(): ExternalNavigationEvent {
-        return ExternalNavigationEvent.OpenTerms("https://example.com/terms")
+        return ExternalNavigationEvent.OpenTerms(stringRepository.getTermsUrl())
     }
 
     override fun getOpenSupportEvent(): ExternalNavigationEvent {
         return ExternalNavigationEvent.OpenSupport(
-            supportEmail = "support@playlistmaker.com",
-            supportSubject = "Поддержка PlaylistMaker",
-            supportMessage = "Здравствуйте, у меня вопрос по приложению...",
-            chooseEmailClient = "Выберите email клиент"
+            supportEmail = stringRepository.getSupportEmail(),
+            supportSubject = stringRepository.getSupportSubject(),
+            supportMessage = stringRepository.getSupportMessage(),
+            chooseEmailClient = stringRepository.getChooseEmailClient()
         )
     }
 }

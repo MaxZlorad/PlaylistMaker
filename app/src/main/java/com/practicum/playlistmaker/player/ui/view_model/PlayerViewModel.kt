@@ -8,14 +8,13 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.domain.models.PlaybackState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import android.media.MediaPlayer
+import com.practicum.playlistmaker.player.domain.api.AudioPlayer
 import kotlinx.coroutines.Job
-import java.io.IOException
 
 class PlayerViewModel(
-    private val mediaPlayer: MediaPlayer = MediaPlayer()) : ViewModel() {
+    private val audioPlayer: AudioPlayer
+) : ViewModel() {
 
-    //private val mediaPlayer: MediaPlayer = MediaPlayer()
     private var progressJob: Job? = null
 
     private val _playbackState = MutableLiveData<PlaybackState>(PlaybackState.Default)
@@ -28,82 +27,65 @@ class PlayerViewModel(
 
     fun preparePlayer(track: Track) {
         currentTrack = track
-        try {
-            mediaPlayer.reset() // Очистить предыдущий трек
-            track.previewUrl?.let { url ->
-                mediaPlayer.setDataSource(url) // Установить URL аудио
-                mediaPlayer.prepareAsync() // Подготовить асинхронно
-
-                // Слушатель готовности
-                mediaPlayer.setOnPreparedListener {
+        track.previewUrl?.let { url ->
+            // Используем единый метод prepare с колбэками
+            audioPlayer.prepare(
+                url = url,
+                onPrepared = {
                     _playbackState.value = PlaybackState.Prepared(track)
                     _currentPosition.value = 0L
+                },
+                onError = { errorMessage ->
+                    _playbackState.value = PlaybackState.Error(errorMessage)
                 }
+            )
 
-                mediaPlayer.setOnCompletionListener {
-                    playbackCompleted()
-                }
-
-                // Слушатель завершения трека
-                mediaPlayer.setOnErrorListener { _, what, extra ->
-                    _playbackState.value = PlaybackState.Error("Playback error: $what, $extra")
-                    false
-                }
+            // Устанавливаем слушатель завершения
+            audioPlayer.setOnCompletionListener {
+                playbackCompleted()
             }
-        } catch (e: IOException) {
-            _playbackState.value = PlaybackState.Error("Failed to load audio: ${e.message}")
+        } ?: run {
+            _playbackState.value = PlaybackState.Error("No preview URL available")
         }
     }
 
     fun startPlayback() {
-        // Проверяем, что плеер не играет и подготовлен
-        if (!mediaPlayer.isPlaying) {
+        if (!audioPlayer.isPlaying()) {
             try {
-                mediaPlayer.start() // воспроизведение
+                audioPlayer.start()
                 _playbackState.value = PlaybackState.Playing
-                startProgressUpdates() // обновление прогресса
+                startProgressUpdates()
             } catch (e: IllegalStateException) {
-                // обработка если плеер не готов
                 _playbackState.value = PlaybackState.Error("Player not prepared")
             }
         }
     }
 
     fun pausePlayback() {
-        mediaPlayer.pause() // пауза
+        audioPlayer.pause()
         _playbackState.value = PlaybackState.Paused
-        stopProgressUpdates() // Остановить обновление прогресса
+        stopProgressUpdates()
     }
 
     fun stopPlayback() {
-        try {
-            // ДОБАВИТЬ: безопасная остановка
-            if (mediaPlayer.isPlaying) {
-                mediaPlayer.stop()
-            }
-        } catch (e: IllegalStateException) {
-            // Игнорируем ошибки при остановке
-        }
+        audioPlayer.stop()
         _playbackState.value = PlaybackState.Stopped
         _currentPosition.value = 0L
         stopProgressUpdates()
     }
 
-    // Обновление прогресса воспроизведения
     private fun startProgressUpdates() {
         progressJob = viewModelScope.launch {
-            while (mediaPlayer.isPlaying) {
-                _currentPosition.value = mediaPlayer.currentPosition.toLong() // Взять позицию
+            while (audioPlayer.isPlaying()) {
+                _currentPosition.value = audioPlayer.getCurrentPosition().toLong()
                 delay(PlayerConstants.PROGRESS_UPDATE_DELAY)
             }
-            // Обновляем позицию когда трек закончил играть
-            if (!mediaPlayer.isPlaying) {
-                _currentPosition.value = mediaPlayer.currentPosition.toLong()
+            if (!audioPlayer.isPlaying()) {
+                _currentPosition.value = audioPlayer.getCurrentPosition().toLong()
             }
         }
     }
 
-    // Остановка обновления прогресса
     private fun stopProgressUpdates() {
         progressJob?.cancel()
         progressJob = null
@@ -123,7 +105,7 @@ class PlayerViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        mediaPlayer.release() // Освободить ресурсы плеера
+        audioPlayer.release()
         stopProgressUpdates()
     }
 }
