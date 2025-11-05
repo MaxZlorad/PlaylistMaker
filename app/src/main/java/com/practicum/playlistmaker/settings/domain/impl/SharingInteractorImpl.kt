@@ -1,27 +1,27 @@
 package com.practicum.playlistmaker.settings.domain.impl
 
-import com.practicum.playlistmaker.settings.domain.models.EmailData
-import com.practicum.playlistmaker.settings.data.repository.ExternalNavigator
-import com.practicum.playlistmaker.settings.data.repository.SharingConstants
 import com.practicum.playlistmaker.settings.domain.api.SharingInteractor
+import com.practicum.playlistmaker.settings.domain.models.ExternalNavigationEvent
+import com.practicum.playlistmaker.settings.domain.api.StringRepository
 
 class SharingInteractorImpl(
-    private val externalNavigator: ExternalNavigator
+    private val stringRepository: StringRepository
 ) : SharingInteractor {
 
-    override fun shareApp() {
-        externalNavigator.shareLink(SharingConstants.SHARE_TEXT)
+    override fun getShareAppEvent(): ExternalNavigationEvent {
+        return ExternalNavigationEvent.ShareApp(stringRepository.getShareMessage())
     }
 
-    override fun openTerms() {
-        externalNavigator.openLink(SharingConstants.TERMS_URL)
+    override fun getOpenTermsEvent(): ExternalNavigationEvent {
+        return ExternalNavigationEvent.OpenTerms(stringRepository.getTermsUrl())
     }
 
-    override fun openSupport() {
-        externalNavigator.openEmail(EmailData(
-            email = SharingConstants.SUPPORT_EMAIL,
-            subject = SharingConstants.SUPPORT_SUBJECT,
-            message = SharingConstants.SUPPORT_MESSAGE
-        ))
+    override fun getOpenSupportEvent(): ExternalNavigationEvent {
+        return ExternalNavigationEvent.OpenSupport(
+            supportEmail = stringRepository.getSupportEmail(),
+            supportSubject = stringRepository.getSupportSubject(),
+            supportMessage = stringRepository.getSupportMessage(),
+            chooseEmailClient = stringRepository.getChooseEmailClient()
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.core.data.network
+package com.practicum.playlistmaker.search.data.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

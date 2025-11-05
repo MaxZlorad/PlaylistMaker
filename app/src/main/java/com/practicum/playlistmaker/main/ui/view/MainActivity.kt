@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.R
@@ -12,12 +11,11 @@ import com.practicum.playlistmaker.library.ui.view.MediaLibraryActivity
 import com.practicum.playlistmaker.search.ui.view.SearchActivity
 import com.practicum.playlistmaker.settings.ui.view.SettingsActivity
 import com.practicum.playlistmaker.main.ui.view_model.MainViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
 
-    private val viewModel: MainViewModel by viewModels {
-        MainViewModel.getFactory(this)
-    }
+    private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

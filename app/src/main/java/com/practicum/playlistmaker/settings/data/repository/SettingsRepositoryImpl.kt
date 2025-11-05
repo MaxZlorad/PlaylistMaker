@@ -1,11 +1,13 @@
 package com.practicum.playlistmaker.settings.data.repository
 
 import android.content.SharedPreferences
-import com.practicum.playlistmaker.core.di.SettingsConstants
+import com.practicum.playlistmaker.search.data.repository.SettingsConstants
 import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
 
 class SettingsRepositoryImpl(
-    private val sharedPreferences: SharedPreferences) : SettingsRepository {
+
+    private val sharedPreferences: SharedPreferences
+    ) : SettingsRepository {
 
     override fun getDarkTheme(): Boolean {
         // Получаем значение темы из SharedPreferences

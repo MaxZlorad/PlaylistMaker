@@ -16,7 +16,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModel
@@ -24,21 +23,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.core.di.Creator
-import com.practicum.playlistmaker.core.domain.api.TracksInteractor
+import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.player.ui.view.PlayerActivity
 import com.practicum.playlistmaker.search.ui.track.TrackAdapter
 import com.practicum.playlistmaker.search.ui.view_model.SearchState
 import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.practicum.playlistmaker.core.domain.models.Track
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.data.repository.SearchConstants
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
-    private val viewModel: SearchViewModel by viewModels() {
-        SearchViewModelFactory(Creator.provideTracksInteractor())
-    }
+    private val viewModel: SearchViewModel by viewModel()
 
     // UI элементы
     private lateinit var searchInput: EditText // Поле ввода поиска
@@ -342,18 +339,5 @@ class SearchActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SearchActivityConstants.SEARCH_QUERY_KEY, searchInput.text.toString())
-    }
-
-    // Factory для ViewModel
-    class SearchViewModelFactory(
-        private val tracksInteractor: TracksInteractor
-    ) : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return SearchViewModel(tracksInteractor) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
     }
 }
