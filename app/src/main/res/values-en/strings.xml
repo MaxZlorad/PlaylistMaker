@@ -37,4 +37,11 @@
     <string name="genre_label">Genre</string>
     <string name="country_label">Country</string>
     <string name="album_art_description">Album cover</string>
+
+    <string name="media_library">Media Library</string>
+    <string name="playlists">Playlists</string>
+    <string name="favourite_tracks">Favourite Tracks</string>
+    <string name="empty_playlists_message">You haven\'t \ncreated any playlists</string>
+    <string name="empty_favourites_message">Your media library is empty</string>
+    <string name="create_playlist">New Playlist</string>
 </resources>

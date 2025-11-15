@@ -7,6 +7,9 @@ import com.practicum.playlistmaker.search.ui.view_model.SearchViewModel
 import com.practicum.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import com.practicum.playlistmaker.library.ui.view_model.FavouriteTracksViewModel
+import com.practicum.playlistmaker.library.ui.view_model.PlaylistsViewModel
+import org.koin.dsl.module
 
 val viewModelModule = module {
     // Main
@@ -19,8 +22,10 @@ val viewModelModule = module {
     viewModel { SettingsViewModel(get(), get()) } // Оба интерфактора
 
     // Player
-    viewModel { PlayerViewModel(get()) }//MediaPlayer создается
+    viewModel { PlayerViewModel(get()) }
 
     // MediaLibrary
-    viewModel { MediaLibraryViewModel() }// Без зависимостей
+    viewModel { MediaLibraryViewModel() }
+    viewModel { PlaylistsViewModel() }
+    viewModel { FavouriteTracksViewModel() }
 }

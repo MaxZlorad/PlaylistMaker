@@ -38,4 +38,11 @@
     <string name="genre_label">Жанр</string>
     <string name="country_label">Страна</string>
     <string name="album_art_description">Обложка альбома</string>
+
+    <string name="media_library">Медиатека</string>
+    <string name="playlists">Плейлисты</string>
+    <string name="favourite_tracks">Избранные треки</string>
+    <string name="empty_playlists_message">Вы не создали \nни одного плейлиста</string>
+    <string name="empty_favourites_message">Ваша медиатека пуста</string>
+    <string name="create_playlist">Новый плейлист</string>
 </resources>
