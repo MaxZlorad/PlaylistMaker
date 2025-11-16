@@ -10,9 +10,8 @@ class MediaLibraryViewPagerAdapter(activity: AppCompatActivity) : FragmentStateA
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> PlaylistsFragment.newInstance()
-            1 -> FavouriteTracksFragment.newInstance()
-            else -> throw IllegalArgumentException("Invalid position: $position")
+            0 -> FavouriteTracksFragment.newInstance()
+            else -> PlaylistsFragment.newInstance()
         }
     }
 }
