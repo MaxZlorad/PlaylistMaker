@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.PlaylistMaker"
+    tools:context="com.practicum.playlistmaker.main.ui.view.RootActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/navigation_graph" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        style="@style/NavMenu"
+        app:menu="@menu/bottom_nav_menu"/>
+
+    <!-- Разделительная линия -->
+    <View
+        android:id="@+id/dividerLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray_track"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="56dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
