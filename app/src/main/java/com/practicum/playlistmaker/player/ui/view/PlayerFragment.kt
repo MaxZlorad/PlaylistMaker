@@ -57,15 +57,13 @@ class PlayerFragment : Fragment() {
         trackNameView = binding.trackName
         artistNameView = binding.artistName
 
-        // ??? Получаем трек из аргументов навигации
+        // Получаем трек из аргументов навигации
         val track = args.track
         if (track == null) {
-            Log.e("PlayerFragment", "Track is null!")
+            Log.e(TAG, "Track is null!")
             findNavController().navigateUp() // Возвращаемся назад если трек не передан
             return
         }
-
-        Log.d("PlayerFragment", "Opening player with track: ${track.trackName}")
 
         setupToolbar()
         setupViews(track)
@@ -77,7 +75,7 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-        // ??? Используем Navigation Component вместо popBackStack
+        // Используем Navigation Component вместо popBackStack
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp() // Навигируем вверх по back stack
         }
@@ -85,7 +83,7 @@ class PlayerFragment : Fragment() {
 
     // Полностью сохраняем логику setupViews из Activity
     private fun setupViews(track: Track) {
-        Log.d("PlayerFragment", "Track preview URL: ${track.previewUrl}")
+        Log.d(TAG, "Track preview URL: ${track.previewUrl}")
 
         // Загружаем обложку через Glide
         Glide.with(this)
@@ -184,7 +182,7 @@ class PlayerFragment : Fragment() {
                 }
                 is PlaybackState.Completed -> {
                     buttonPlayPause.setImageResource(R.drawable.ic_play_100)
-                    currentTimeView.text = "00:00"
+                    currentTimeView.text = viewModel.getFormattedTime(0L)
                 }
                 else -> {}
             }
@@ -209,5 +207,9 @@ class PlayerFragment : Fragment() {
         // Останавливаем воспроизведение при уничтожении фрагмента
         viewModel.stopPlayback()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "PlayerFragment"
     }
 }

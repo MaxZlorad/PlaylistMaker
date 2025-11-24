@@ -36,10 +36,9 @@ class RootActivity : AppCompatActivity() {
 
         // Скрываем BottomNavigationView при переходе на PlayerFragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            //binding.bottomNavigationView.isVisible = destination.id != R.id.playerFragment
-            val isVisible = destination.id != R.id.playerFragment
-            binding.bottomNavigationView.isVisible = isVisible
-            binding.dividerLine.isVisible = isVisible
+            val isBottomNavVisible = destination.id != R.id.playerFragment
+            binding.bottomNavigationView.isVisible = isBottomNavVisible
+            binding.dividerLine.isVisible = isBottomNavVisible
         }
 
     }
