@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.android.navigation.safe.args)
 }
 
 android {
@@ -67,6 +68,8 @@ dependencies {
 
     // Image Loading
     implementation(libs.glide)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     annotationProcessor(libs.glide.compiler)
 
     // Testing

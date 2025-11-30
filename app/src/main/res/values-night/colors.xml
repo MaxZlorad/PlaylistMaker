@@ -25,4 +25,8 @@
     <color name="background_item_track">#1A1B22</color>
     <color name="search_field_element">#1A1B22</color>
     <color name="search_field_background">#FFFFFF</color>
+
+    <color name="selected_item">#3772E7</color>
+    <color name="unselected_item">#FFFFFF</color>
+    <color name="menu_item_container">#E6E8EB</color>
 </resources>

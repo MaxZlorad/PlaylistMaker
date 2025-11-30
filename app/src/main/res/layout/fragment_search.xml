@@ -72,8 +72,8 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="visible"
+            android:layout_marginBottom="86dp"
             android:elevation="2dp">
-
 
             <TextView
                 android:id="@+id/history_title"
@@ -94,15 +94,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:clipToPadding="false"
                 android:paddingTop="@dimen/padding_micro"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_track" />
+                tools:listitem="@layout/item_track"/>
 
             <com.google.android.material.button.MaterialButton
                 style="@style/ClearButton"
                 android:id="@+id/clear_history_button"
-                android:text="@string/clear_history" />
+                android:text="@string/clear_history"/>
 
         </LinearLayout>
 
@@ -111,8 +110,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/padding_micro"
-            android:paddingBottom="@dimen/padding_micro"
+            android:paddingTop="2dp"
+            android:paddingBottom="64dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_track" />
 
