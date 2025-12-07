@@ -8,5 +8,5 @@ interface ItunesApiService {
     @GET("/search?entity=song")
     suspend fun search(
         @Query(value = "term", encoded = true) text: String
-    ): SearchResponseDto//Call<SearchResponseDto>
+    ): SearchResponseDto
 }

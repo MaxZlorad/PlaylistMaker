@@ -6,17 +6,42 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.ui.view.SearchActivityConstants.SEARCH_DEBOUNCE_DELAY
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 class SearchViewModel(
     private val tracksInteractor: TracksInteractor
 ) : ViewModel() {
+
+    private var latestSearchText: String? = null
+    private var searchJob: Job? = null
 
     private val _searchState = MutableLiveData<SearchState>(SearchState.Empty)
     val searchState: LiveData<SearchState> = _searchState
 
     private val _historyState = MutableLiveData<List<Track>>(emptyList())
     val historyState: LiveData<List<Track>> = _historyState
+
+    // Функция debounce для поискового запроса
+    fun searchDebounce(changedText: String) {
+        // Проверяем, отличается ли новый текст от предыдущего
+        if (latestSearchText == changedText) {
+            return
+        }
+
+        latestSearchText = changedText
+
+        // Отменяем предыдущую корутину
+        searchJob?.cancel()
+
+        // Запускаем новую корутину с задержкой во viewModelScope
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchTracks(changedText)
+        }
+    }
 
     // Собираем Flow
     fun searchTracks(query: String) {

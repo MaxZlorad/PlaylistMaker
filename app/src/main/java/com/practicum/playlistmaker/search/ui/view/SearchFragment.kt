@@ -21,9 +21,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.search.ui.view.SearchActivityConstants.SEARCH_QUERY_KEY
 import com.practicum.playlistmaker.search.ui.view.SearchActivityConstants.CLICK_DEBOUNCE_DELAY
-import com.practicum.playlistmaker.search.ui.view.SearchActivityConstants.SEARCH_DEBOUNCE_DELAY
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -41,8 +39,6 @@ class SearchFragment : Fragment() {
     private lateinit var adapter: TrackAdapter          // Для отображения результатов поиска
     private lateinit var historyAdapter: TrackAdapter   // Для отображения истории поиска
 
-    // Переменные для Debounce
-    private var searchJob: Job? = null // Job для debounce поиска
     private var isClickAllowed = true // Флаг для debounce кликов
 
     // Создание View фрагмента - вызывается системой при создании UI
@@ -87,8 +83,7 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
 
-        // Вместо handler.removeCallbacks(searchRunnable)
-        searchJob?.cancel()
+        // Job отменится автоматически при уничтожении ViewModel
 
         // Очищаем Binding для предотвращения утечек памяти
         _binding = null
@@ -157,7 +152,7 @@ class SearchFragment : Fragment() {
                     viewModel.setEmptyState()
                 } else {
                     // Если есть текст - запускаем отложенный поиск
-                    searchDebounce(query) // Debounce через корутины
+                    viewModel.searchDebounce(query) // Debounce через корутины
                 }
 
                 // Обновляем видимость истории поиска
@@ -374,18 +369,6 @@ class SearchFragment : Fragment() {
             }
         }
         return current
-    }
-
-    // Отложенный поиск (debounce для поля ввода), поиск через 2 сек. после последнего ввода символа
-    private fun searchDebounce(query: String) {
-        // Отменяем предыдущую задачу поиска
-        searchJob?.cancel()
-
-        // Запускаем корутину с задержкой
-        searchJob = viewLifecycleOwner.lifecycleScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY) // Ждём 2 секунды
-            performSearch(query) // Выполняем поиск
-        }
     }
 
     // Скрытие клавиатуры
