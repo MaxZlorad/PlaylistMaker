@@ -56,8 +56,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.fragment.ktx)
 
+    // ViewPager2
+    implementation(libs.androidx.viewpager2)
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
 
     // Network
     implementation(libs.retrofit)
@@ -68,9 +72,12 @@ dependencies {
 
     // Image Loading
     implementation(libs.glide)
+    annotationProcessor(libs.glide.compiler)
+
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    annotationProcessor(libs.glide.compiler)
+
 
     // Testing
     testImplementation(libs.junit)

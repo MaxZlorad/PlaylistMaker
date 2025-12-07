@@ -18,22 +18,31 @@ class SearchViewModel(
     private val _historyState = MutableLiveData<List<Track>>(emptyList())
     val historyState: LiveData<List<Track>> = _historyState
 
+    // Собираем Flow
     fun searchTracks(query: String) {
         if (query.trim().isEmpty()) {
             _searchState.value = SearchState.Empty
             return
         }
 
+        // Показываем индикатор загрузки
         _searchState.value = SearchState.Loading
 
+        // Запуск корутины в viewModelScope
         viewModelScope.launch {
-            try {
-                // Прямой вызов suspend функции
-                val tracks = tracksInteractor.searchTracks(query)
-                _searchState.value = if (tracks.isEmpty()) SearchState.EmptyResults
-                else SearchState.Success(tracks)
-            } catch (e: Exception) {
-                _searchState.value = SearchState.Error
+            tracksInteractor.searchTracks(query).collect { result ->
+                _searchState.value = when {
+                    result.isSuccess -> {
+                        val tracks = result.getOrNull() ?: emptyList()
+                        if (tracks.isEmpty()) {
+                            SearchState.EmptyResults
+                        } else {
+                            SearchState.Success(tracks)
+                        }
+                    }
+                    result.isFailure -> SearchState.Error
+                    else -> SearchState.Error
+                }
             }
         }
     }
