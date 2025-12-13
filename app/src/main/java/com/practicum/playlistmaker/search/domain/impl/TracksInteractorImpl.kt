@@ -4,15 +4,15 @@ import com.practicum.playlistmaker.search.domain.api.HistoryRepository
 import com.practicum.playlistmaker.search.domain.api.SearchRepository
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
-import java.util.concurrent.Executors
+import kotlinx.coroutines.flow.Flow
 
 class TracksInteractorImpl(
-    //private val repository: TracksRepository) : TracksInteractor {
     private val searchRepository: SearchRepository,
     private val historyRepository: HistoryRepository
 ) : TracksInteractor {
 
-    override suspend fun searchTracks(query: String): List<Track> {
+    // Просто Flow из Repository
+    override fun searchTracks(query: String): Flow<Result<List<Track>>> {
         // Прямой вызов без callback
         return searchRepository.searchTracks(query)
     }
