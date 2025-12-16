@@ -162,7 +162,7 @@ class PlayerFragment : Fragment() {
 
     private fun setupPlaybackControls() {
         buttonPlayPause.setOnClickListener {
-            when (viewModel.playbackState.value) {
+            when (viewModel.screenState.value?.playbackState) {
                 is PlaybackState.Playing -> viewModel.pausePlayback()
                 is PlaybackState.Paused,
                 is PlaybackState.Prepared,
@@ -182,40 +182,43 @@ class PlayerFragment : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.playbackState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is PlaybackState.Prepared -> {
-                    buttonPlayPause.isEnabled = true
-                    buttonPlayPause.setImageResource(R.drawable.ic_play_100)
-                }
-                is PlaybackState.Playing -> {
-                    buttonPlayPause.setImageResource(R.drawable.ic_pause_100)
-                }
-                is PlaybackState.Paused -> {
-                    buttonPlayPause.setImageResource(R.drawable.ic_play_100)
-                }
-                is PlaybackState.Completed -> {
-                    buttonPlayPause.setImageResource(R.drawable.ic_play_100)
-                    currentTimeView.text = viewModel.getFormattedTime(0L)
-                }
-                else -> {}
-            }
-        }
+        viewModel.screenState.observe(viewLifecycleOwner) { state ->
+            // Обновляем UI плеера
+            updatePlaybackUI(state.playbackState)
 
-        viewModel.currentPosition.observe(viewLifecycleOwner) { position ->
-            currentTimeView.text = viewModel.getFormattedTime(position)
-        }
+            // Обновляем позицию
+            currentTimeView.text = viewModel.getFormattedTime(state.currentPosition)
 
-        // Подписываемся на изменения статуса избранного
-        viewModel.isFavorite.observe(viewLifecycleOwner) { isFavorite ->
-            // Меняем иконку кнопки в зависимости от состояния
-            if (isFavorite) {
-                // Трек в избранном — показываем заполненное сердечко
-                buttonAddToFavorites.setImageResource(R.drawable.ic_favorite_select)
-            } else {
-                // Трека нет в избранном — показываем пустое сердечко
-                buttonAddToFavorites.setImageResource(R.drawable.ic_favorite_border)
+            // Обновляем кнопку избранного
+            updateFavoriteButton(state.isFavorite)
+        }
+    }
+
+    private fun updatePlaybackUI(playbackState: PlaybackState) {
+        when (playbackState) {
+            is PlaybackState.Prepared -> {
+                buttonPlayPause.isEnabled = true
+                buttonPlayPause.setImageResource(R.drawable.ic_play_100)
             }
+            is PlaybackState.Playing -> {
+                buttonPlayPause.setImageResource(R.drawable.ic_pause_100)
+            }
+            is PlaybackState.Paused -> {
+                buttonPlayPause.setImageResource(R.drawable.ic_play_100)
+            }
+            is PlaybackState.Completed -> {
+                buttonPlayPause.setImageResource(R.drawable.ic_play_100)
+                currentTimeView.text = viewModel.getFormattedTime(0L)
+            }
+            else -> {}
+        }
+    }
+
+    private fun updateFavoriteButton(isFavorite: Boolean) {
+        if (isFavorite) {
+            buttonAddToFavorites.setImageResource(R.drawable.ic_favorite_select)
+        } else {
+            buttonAddToFavorites.setImageResource(R.drawable.ic_favorite_border)
         }
     }
 
@@ -223,7 +226,7 @@ class PlayerFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         // Ставим на паузу при скрытии фрагмента
-        if (viewModel.playbackState.value is PlaybackState.Playing) {
+        if (viewModel.screenState.value?.playbackState is PlaybackState.Playing) {
             viewModel.pausePlayback()
         }
     }

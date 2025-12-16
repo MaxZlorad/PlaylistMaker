@@ -11,6 +11,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.practicum.playlistmaker.player.domain.api.AudioPlayer
 import kotlinx.coroutines.Job
+import com.practicum.playlistmaker.player.domain.models.PlayerScreenState
 
 class PlayerViewModel(
     private val audioPlayer: AudioPlayer,
@@ -19,31 +20,32 @@ class PlayerViewModel(
 
     private var progressJob: Job? = null
 
-    private val _playbackState = MutableLiveData<PlaybackState>(PlaybackState.Default)
-    val playbackState: LiveData<PlaybackState> = _playbackState
-
-    private val _currentPosition = MutableLiveData<Long>(0L)
-    val currentPosition: LiveData<Long> = _currentPosition
-
     private var currentTrack: Track? = null
 
-    private val _isFavorite = MutableLiveData<Boolean>()
-    val isFavorite: LiveData<Boolean> = _isFavorite
+    private val _screenState = MutableLiveData<PlayerScreenState>()
+    val screenState: LiveData<PlayerScreenState> = _screenState
+
+    init {
+        // Инициализация с дефолтным состоянием
+        _screenState.value = PlayerScreenState()
+    }
 
     fun preparePlayer(track: Track) {
         currentTrack = track
-        _isFavorite.value = track.isFavorite
+        updateState(isFavorite = track.isFavorite)
 
         track.previewUrl?.let { url ->
             // Используем единый метод prepare с колбэками
             audioPlayer.prepare(
                 url = url,
                 onPrepared = {
-                    _playbackState.value = PlaybackState.Prepared(track)
-                    _currentPosition.value = 0L
+                    updateState(
+                        playbackState = PlaybackState.Prepared(track),
+                        currentPosition = 0L
+                    )
                 },
                 onError = { errorMessage ->
-                    _playbackState.value = PlaybackState.Error(errorMessage)
+                    updateState(playbackState = PlaybackState.Error(errorMessage))
                 }
             )
 
@@ -52,7 +54,7 @@ class PlayerViewModel(
                 playbackCompleted()
             }
         } ?: run {
-            _playbackState.value = PlaybackState.Error("No preview URL available")
+            updateState(playbackState = PlaybackState.Error("No preview URL available"))
         }
     }
 
@@ -60,35 +62,37 @@ class PlayerViewModel(
         if (!audioPlayer.isPlaying()) {
             try {
                 audioPlayer.start()
-                _playbackState.value = PlaybackState.Playing
+                updateState(playbackState = PlaybackState.Playing)
                 startProgressUpdates()
             } catch (e: IllegalStateException) {
-                _playbackState.value = PlaybackState.Error("Player not prepared")
+                updateState(playbackState = PlaybackState.Error("Player not prepared"))
             }
         }
     }
 
     fun pausePlayback() {
         audioPlayer.pause()
-        _playbackState.value = PlaybackState.Paused
+        updateState(playbackState = PlaybackState.Paused)
         stopProgressUpdates()
     }
 
     fun stopPlayback() {
         audioPlayer.stop()
-        _playbackState.value = PlaybackState.Stopped
-        _currentPosition.value = 0L
+        updateState(
+            playbackState = PlaybackState.Stopped,
+            currentPosition = 0L
+        )
         stopProgressUpdates()
     }
 
     private fun startProgressUpdates() {
         progressJob = viewModelScope.launch {
             while (audioPlayer.isPlaying()) {
-                _currentPosition.value = audioPlayer.getCurrentPosition().toLong()
+                updateState(currentPosition = audioPlayer.getCurrentPosition().toLong())
                 delay(PlayerConstants.PROGRESS_UPDATE_DELAY)
             }
             if (!audioPlayer.isPlaying()) {
-                _currentPosition.value = audioPlayer.getCurrentPosition().toLong()
+                updateState(currentPosition = audioPlayer.getCurrentPosition().toLong())
             }
         }
     }
@@ -100,8 +104,10 @@ class PlayerViewModel(
 
     private fun playbackCompleted() {
         stopProgressUpdates()
-        _currentPosition.value = 0L
-        _playbackState.value = PlaybackState.Completed
+        updateState(
+            currentPosition = 0L,
+            playbackState = PlaybackState.Completed
+        )
     }
 
     fun getFormattedTime(millis: Long): String {
@@ -126,8 +132,23 @@ class PlayerViewModel(
                 track.isFavorite = true // Обновляем локальный флаг
             }
             // Публикуем новое состояние в UI
-            _isFavorite.value = track.isFavorite // публикует изменение в UI через LiveData
+            updateState(isFavorite = track.isFavorite) // публикует изменение в UI через LiveData
         }
+    }
+
+    // Обновление стейта
+    private fun updateState(
+        playbackState: PlaybackState? = null,
+        currentPosition: Long? = null,
+        isFavorite: Boolean? = null
+    ) {
+        val currentState = _screenState.value ?: PlayerScreenState()
+
+        _screenState.value = currentState.copy(
+            playbackState = playbackState ?: currentState.playbackState,
+            currentPosition = currentPosition ?: currentState.currentPosition,
+            isFavorite = isFavorite ?: currentState.isFavorite
+        )
     }
 
     override fun onCleared() {
