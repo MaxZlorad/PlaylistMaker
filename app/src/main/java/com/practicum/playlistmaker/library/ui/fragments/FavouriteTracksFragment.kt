@@ -8,6 +8,12 @@ import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.databinding.FragmentFavouriteTracksBinding
 import com.practicum.playlistmaker.library.ui.view_model.FavouriteTracksViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.library.domain.models.FavoriteTracksState
+import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.search.ui.track.TrackAdapter
 
 class FavouriteTracksFragment : Fragment() {
 
@@ -16,11 +22,16 @@ class FavouriteTracksFragment : Fragment() {
 
     private val viewModel: FavouriteTracksViewModel by viewModel()
 
+    // Переиспользуем адаптер из экрана поиска
+    private val trackAdapter = TrackAdapter { track ->
+        onTrackClick(track)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFavouriteTracksBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -28,9 +39,63 @@ class FavouriteTracksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.favouriteTracks.observe(viewLifecycleOwner) { tracks ->
-            // Реализация
+        // ✅ Настройка RecyclerView
+        setupRecyclerView()
+
+        // ✅ Подписываемся на изменения состояния
+        observeViewModel()
+    }
+
+    // ✅ НОВОЕ: Настройка RecyclerView для списка треков
+    private fun setupRecyclerView() {
+        binding.recyclerViewFavoriteTracks.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = trackAdapter
         }
+    }
+
+    // ✅ НОВОЕ: Подписка на изменения состояния
+    private fun observeViewModel() {
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is FavoriteTracksState.Empty -> {
+                    // Показываем заглушку "Нет избранных треков"
+                    binding.placeholderImage.visibility = View.VISIBLE
+                    binding.placeholderMessage.visibility = View.VISIBLE
+                    binding.recyclerViewFavoriteTracks.visibility = View.GONE
+                }
+                is FavoriteTracksState.Content -> {
+                    // Показываем список треков
+                    binding.placeholderImage.visibility = View.GONE
+                    binding.placeholderMessage.visibility = View.GONE
+                    binding.recyclerViewFavoriteTracks.visibility = View.VISIBLE
+
+                    // Обновляем данные в адаптере
+                    //trackAdapter.tracks = state.tracks
+                    trackAdapter.updateTracks(state.tracks)
+                }
+            }
+        }
+    }
+
+    // ✅ НОВОЕ: Обработка клика по треку
+    private fun onTrackClick(track: Track) {
+        // Переходим на экран плеера через Navigation Component
+        // Используем action из MediaLibraryFragment к PlayerFragment
+        //val action = MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerFragment(track)
+        //findNavController().navigate(action)
+
+        val bundle = Bundle().apply {
+            putSerializable("track", track)
+        }
+        findNavController().navigate(R.id.playerFragment, bundle)
+    }
+
+    // ✅ НОВОЕ: Обновляем список при возвращении на экран
+    override fun onResume() {
+        super.onResume()
+        // Перезагружаем треки, чтобы обновить isFavorite
+        viewModel.loadFavoriteTracks()
     }
 
     override fun onDestroyView() {

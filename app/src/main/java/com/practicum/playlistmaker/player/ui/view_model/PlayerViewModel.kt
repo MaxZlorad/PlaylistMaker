@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.library.domain.api.FavoriteTracksInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.domain.models.PlaybackState
 import kotlinx.coroutines.delay
@@ -12,7 +13,8 @@ import com.practicum.playlistmaker.player.domain.api.AudioPlayer
 import kotlinx.coroutines.Job
 
 class PlayerViewModel(
-    private val audioPlayer: AudioPlayer
+    private val audioPlayer: AudioPlayer,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor
 ) : ViewModel() {
 
     private var progressJob: Job? = null
@@ -25,8 +27,13 @@ class PlayerViewModel(
 
     private var currentTrack: Track? = null
 
+    private val _isFavorite = MutableLiveData<Boolean>()
+    val isFavorite: LiveData<Boolean> = _isFavorite
+
     fun preparePlayer(track: Track) {
         currentTrack = track
+        _isFavorite.value = track.isFavorite
+
         track.previewUrl?.let { url ->
             // Используем единый метод prepare с колбэками
             audioPlayer.prepare(
@@ -101,6 +108,26 @@ class PlayerViewModel(
         val seconds = (millis / 1000) % 60
         val minutes = (millis / (1000 * 60)) % 60
         return String.format("%02d:%02d", minutes, seconds)
+    }
+
+    // Вызывается при нажатии на "Лайк"
+    fun onFavoriteClicked() {
+        val track = currentTrack ?: return // Проверяем, что трек загружен
+
+        // Запускаем корутину в viewModelScope (автоматически отменится при уничтожении ViewModel)
+        viewModelScope.launch {
+            if (track.isFavorite) { // флаг показывает текущее состояние в избранном да/нет
+                // Если трек уже в избранном — удаляем
+                favoriteTracksInteractor.removeTrackFromFavorites(track)
+                track.isFavorite = false // Обновляем локальный флаг
+            } else {
+                // Если трека нет в избранном — добавляем
+                favoriteTracksInteractor.addTrackToFavorites(track)
+                track.isFavorite = true // Обновляем локальный флаг
+            }
+            // Публикуем новое состояние в UI
+            _isFavorite.value = track.isFavorite // публикует изменение в UI через LiveData
+        }
     }
 
     override fun onCleared() {

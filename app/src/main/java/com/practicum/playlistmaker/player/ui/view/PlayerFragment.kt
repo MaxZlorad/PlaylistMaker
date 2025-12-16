@@ -37,6 +37,9 @@ class PlayerFragment : Fragment() {
     private lateinit var trackNameView: TextView
     private lateinit var artistNameView: TextView
 
+    // Кнопка "Нравится" (сердечко)
+    private lateinit var buttonAddToFavorites: ImageButton
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,6 +59,7 @@ class PlayerFragment : Fragment() {
         albumArt = binding.albumArt
         trackNameView = binding.trackName
         artistNameView = binding.artistName
+        buttonAddToFavorites = binding.favoriteButton
 
         // Получаем трек из аргументов навигации
         val track = args.track
@@ -69,6 +73,7 @@ class PlayerFragment : Fragment() {
         setupViews(track)
         observeViewModel()
         setupPlaybackControls()
+        setupFavoriteButton()
 
         // Подготавливаем плеер с треком
         viewModel.preparePlayer(track)
@@ -98,7 +103,8 @@ class PlayerFragment : Fragment() {
 
         // Блок информации о продолжительности
         setupOptionalField(
-            value = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis),
+            value = SimpleDateFormat(
+                "mm:ss", Locale.getDefault()).format(track.trackTimeMillis),
             labelView = binding.durationLabel,
             valueView = binding.durationValue,
             labelText = getString(R.string.duration_label)
@@ -167,6 +173,14 @@ class PlayerFragment : Fragment() {
         }
     }
 
+    // Настройка кнопки "Нравится"
+    private fun setupFavoriteButton() {
+        // При нажатии на кнопку вызываем метод ViewModel
+        buttonAddToFavorites.setOnClickListener {
+            viewModel.onFavoriteClicked()
+        }
+    }
+
     private fun observeViewModel() {
         viewModel.playbackState.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -190,6 +204,18 @@ class PlayerFragment : Fragment() {
 
         viewModel.currentPosition.observe(viewLifecycleOwner) { position ->
             currentTimeView.text = viewModel.getFormattedTime(position)
+        }
+
+        // Подписываемся на изменения статуса избранного
+        viewModel.isFavorite.observe(viewLifecycleOwner) { isFavorite ->
+            // Меняем иконку кнопки в зависимости от состояния
+            if (isFavorite) {
+                // Трек в избранном — показываем заполненное сердечко
+                buttonAddToFavorites.setImageResource(R.drawable.ic_favorite_select)
+            } else {
+                // Трека нет в избранном — показываем пустое сердечко
+                buttonAddToFavorites.setImageResource(R.drawable.ic_favorite_border)
+            }
         }
     }
 

@@ -8,7 +8,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 
 class TrackAdapter(
-    private var tracks: List<Track>,
+    private var tracks: List<Track> = emptyList(),
     private val onItemClick: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {

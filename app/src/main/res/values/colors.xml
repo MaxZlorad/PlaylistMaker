@@ -31,4 +31,6 @@
     <color name="selected_item">#3772E7</color>
     <color name="unselected_item">#1A1B22</color>
     <color name="menu_item_container">#1A1B22</color>
+
+    <color name="favorite_select">#F56B6C</color>
 </resources>
