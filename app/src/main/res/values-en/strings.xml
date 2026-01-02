@@ -43,5 +43,24 @@
     <string name="favourite_tracks">Favourite Tracks</string>
     <string name="empty_playlists_message">You haven\'t \ncreated any playlists</string>
     <string name="empty_favourites_message">Your media library is empty</string>
-    <string name="create_playlist">New Playlist</string>
+
+    <string name="playlist_created">Playlist %s created</string>
+
+    <!-- =========== NEW PLAYLIST SCREEN =========== -->
+    <string name="new_playlist_title">New Playlist</string>
+    <string name="playlist_name_hint">Title*</string>
+    <string name="playlist_description_hint">Description</string>
+    <string name="create_playlist">Create</string>
+    <string name="playlist_cover">Playlist Cover</string>
+    <string name="add_cover_image">Add Cover</string>
+
+    <!-- Exit Confirmation Dialog -->
+    <string name="exit_confirmation_title">Stop creating playlist?</string>
+    <string name="exit_confirmation_message">All Unsaved Data will be lost</string>
+    <string name="finish">Finish</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="no_playlists">No playlists</string>
+
+    <string name="add_to_playlist">Add to playlist</string>
 </resources>

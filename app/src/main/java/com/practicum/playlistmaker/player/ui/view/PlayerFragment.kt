@@ -20,6 +20,10 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.fragment.findNavController
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.practicum.playlistmaker.player.ui.BottomSheetPlaylistAdapter
 
 class PlayerFragment : Fragment() {
 
@@ -39,6 +43,9 @@ class PlayerFragment : Fragment() {
 
     // Кнопка "Нравится" (сердечко)
     private lateinit var buttonAddToFavorites: ImageButton
+
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
+    private lateinit var bottomSheetAdapter: BottomSheetPlaylistAdapter
 
 
     override fun onCreateView(
@@ -74,6 +81,7 @@ class PlayerFragment : Fragment() {
         observeViewModel()
         setupPlaybackControls()
         setupFavoriteButton()
+        setupBottomSheet()
 
         // Подготавливаем плеер с треком
         viewModel.preparePlayer(track)
@@ -192,6 +200,34 @@ class PlayerFragment : Fragment() {
             // Обновляем кнопку избранного
             updateFavoriteButton(state.isFavorite)
         }
+
+        // Список плейлистов
+        viewModel.playlists.observe(viewLifecycleOwner) { playlists ->
+            bottomSheetAdapter.setPlaylists(playlists)
+        }
+
+        // Статус добавления трека
+        viewModel.addTrackStatus.observe(viewLifecycleOwner) { status ->
+            when (status) {
+                is PlayerViewModel.AddTrackStatus.Success -> {
+                    // Закрывать Bottom Sheet ТОЛЬКО при успехе
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                    Toast.makeText(
+                        requireContext(),
+                        "Добавлено в плейлист ${status.playlistName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                is PlayerViewModel.AddTrackStatus.AlreadyExists -> {
+                    // Не закрываем Bottom Sheet
+                    Toast.makeText(
+                        requireContext(),
+                        "Трек уже добавлен в плейлист ${status.playlistName}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun updatePlaybackUI(playbackState: PlaybackState) {
@@ -229,6 +265,66 @@ class PlayerFragment : Fragment() {
         if (viewModel.screenState.value?.playbackState is PlaybackState.Playing) {
             viewModel.pausePlayback()
         }
+    }
+
+    // Настройка Bottom Sheet
+    private fun setupBottomSheet() {
+        // Инициализация BottomSheetBehavior
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        // Adapter для списка плейлистов
+        bottomSheetAdapter = BottomSheetPlaylistAdapter { playlist ->
+            // Клик на плейлист - добавляем трек
+            val track = getCurrentTrack() // Получение текущего трека
+            viewModel.addTrackToPlaylist(track, playlist)
+        }
+
+        binding.bottomSheetRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = bottomSheetAdapter
+        }
+
+        // Слушатель изменения состояния Bottom Sheet
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // Плавное затемнение
+                _binding?.let { binding ->
+                    binding.overlay.alpha = (slideOffset + 1f) / 2f
+                }
+            }
+        })
+
+        binding.playlistButton.setOnClickListener {
+            viewModel.loadPlaylists()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        // Кнопка "Новый плейлист" в Bottom Sheet
+        binding.newPlaylistButton.setOnClickListener {
+            // Переход на экран создания плейлиста
+            findNavController().navigate(
+                R.id.action_playerFragment_to_newPlaylistFragment
+            )
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+    }
+
+    // Метод для получения текущего трека
+    private fun getCurrentTrack(): Track {
+        return args.track
     }
 
     override fun onDestroyView() {

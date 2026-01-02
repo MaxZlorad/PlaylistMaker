@@ -1,7 +1,8 @@
 package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.library.domain.api.FavoriteTracksInteractor
-import com.practicum.playlistmaker.library.domain.impl.FavoriteTracksInteractorImpl
+import com.practicum.playlistmaker.library.domain.api.PlaylistsInteractor
+import com.practicum.playlistmaker.library.data.repository.FavoriteTracksInteractorImpl
 import com.practicum.playlistmaker.search.domain.api.TracksInteractor
 import com.practicum.playlistmaker.search.domain.impl.TracksInteractorImpl
 import com.practicum.playlistmaker.settings.domain.api.SettingsInteractor
@@ -21,5 +22,11 @@ val interactorModule = module {
     // Интерактор для добавления/удаления треков из избранного
     factory<FavoriteTracksInteractor> {
         FavoriteTracksInteractorImpl(repository = get())
+    }
+
+    single {
+        PlaylistsInteractor(
+            repository = get() // PlaylistsRepository из RepositoryModule
+        )
     }
 }

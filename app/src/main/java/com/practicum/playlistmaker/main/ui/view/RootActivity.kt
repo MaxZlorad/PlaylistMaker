@@ -28,18 +28,21 @@ class RootActivity : AppCompatActivity() {
         }
 
         // Находим NavHostFragment
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
 
         // Связываем BottomNavigationView с NavController
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        // Скрываем BottomNavigationView при переходе на PlayerFragment
+        // Скрываем BottomNavigationView при переходе на PlayerFragment или PlaylistFragment
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            val isBottomNavVisible = destination.id != R.id.playerFragment
+            val isBottomNavVisible = destination.id !in setOf(
+                R.id.playerFragment,
+                R.id.newPlaylistFragment
+            )
             binding.bottomNavigationView.isVisible = isBottomNavVisible
             binding.dividerLine.isVisible = isBottomNavVisible
         }
-
     }
 }
