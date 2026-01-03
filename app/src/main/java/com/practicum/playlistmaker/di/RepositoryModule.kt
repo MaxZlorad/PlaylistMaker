@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.di.NamedConstants.HISTORY_PREFS
 import com.practicum.playlistmaker.di.NamedConstants.SETTINGS_PREFS
+import com.practicum.playlistmaker.library.data.db.AppDatabase
 import com.practicum.playlistmaker.library.data.db.PlaylistDbConverter
 import com.practicum.playlistmaker.library.data.db.PlaylistTrackDbConverter
 import com.practicum.playlistmaker.library.domain.impl.FavoriteTracksRepository
@@ -58,9 +59,11 @@ val repositoryModule = module {
     // Repository для плейлистов
     single<PlaylistsRepository> {
         PlaylistsRepositoryImpl(
-            appDatabase = get(), // AppDatabase из DataModule
+            playlistDao = get<AppDatabase>().playlistDao(),
+            playlistTrackDao = get<AppDatabase>().playlistTrackDao(),
             playlistConverter = get(), // PlaylistDbConverter
-            trackConverter = get() // PlaylistTrackDbConverter
+            trackConverter = get(), // PlaylistTrackDbConverter
+            imageStorage = get()
         )
     }
 }

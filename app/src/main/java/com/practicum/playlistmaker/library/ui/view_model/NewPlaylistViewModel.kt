@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.library.domain.api.PlaylistsInteractor
+import com.practicum.playlistmaker.library.domain.models.NewPlaylistState
 import kotlinx.coroutines.launch
 
 // ViewModel для экрана создания плейлиста
@@ -15,21 +16,9 @@ class NewPlaylistViewModel(
 
     // ===== STATE =====
 
-    // Название плейлиста
-    private val _playlistName = MutableLiveData<String>()
-    val playlistName: LiveData<String> = _playlistName
-
-    // Описание плейлиста
-    private val _playlistDescription = MutableLiveData<String>()
-    val playlistDescription: LiveData<String> = _playlistDescription
-
-    // URI выбранного изображения обложки
-    private val _coverImageUri = MutableLiveData<Uri?>()
-    val coverImageUri: LiveData<Uri?> = _coverImageUri
-
-    // Активна ли кнопка "Создать" (название должно быть заполнено!)
-    private val _isCreateButtonEnabled = MutableLiveData<Boolean>(false)
-    val isCreateButtonEnabled: LiveData<Boolean> = _isCreateButtonEnabled
+    // Единое состояние экрана (вместо 4 отдельных LiveData)
+    private val _state = MutableLiveData(NewPlaylistState())
+    val state: LiveData<NewPlaylistState> = _state
 
     // Событие успешного создания плейлиста
     private val _playlistCreated = MutableLiveData<String>() // Название созданного плейлиста
@@ -39,51 +28,47 @@ class NewPlaylistViewModel(
 
     // Обновить название плейлиста
     fun updatePlaylistName(name: String) {
-        _playlistName.value = name
-        updateCreateButtonState()
+        _state.value = _state.value?.copy(
+            playlistName = name,
+            isCreateButtonEnabled = name.isNotEmpty()
+        )
     }
 
     // Обновить описание плейлиста
     fun updatePlaylistDescription(description: String) {
-        _playlistDescription.value = description
+        _state.value = _state.value?.copy(playlistDescription = description)
     }
 
     // Установить URI выбранного изображения обложки
     fun setCoverImage(uri: Uri?) {
-        _coverImageUri.value = uri
+        _state.value = _state.value?.copy(coverImageUri = uri)
     }
 
     // Проверить, есть ли несохранённые данные
     fun hasUnsavedData(): Boolean {
-        return !_playlistName.value.isNullOrEmpty() ||
-                !_playlistDescription.value.isNullOrEmpty() ||
-                _coverImageUri.value != null
+        val currentState = _state.value ?: return false
+        return currentState.playlistName.isNotEmpty() ||
+                currentState.playlistDescription.isNotEmpty() ||
+                currentState.coverImageUri != null
     }
 
     // Создать плейлист
-    fun createPlaylist(saveImageCallback: (Uri) -> String?) {
-        val name = _playlistName.value ?: return
+    fun createPlaylist() {
+        val currentState = _state.value ?: return
+        val name = currentState.playlistName
+        if (name.isEmpty()) return
 
         viewModelScope.launch {
-            // Сохраняем изображение обложки (если выбрано)
-            val coverImagePath = _coverImageUri.value?.let { uri ->
-                saveImageCallback(uri) // Функция из Fragment для сохранения
-            }
 
             // Создаём плейлист через Interactor
             playlistsInteractor.createPlaylist(
                 name = name,
-                description = _playlistDescription.value,
-                coverImagePath = coverImagePath
+                description = currentState.playlistDescription.takeIf { it.isNotEmpty() },
+                coverImageUri = currentState.coverImageUri // Uri напрямую
             )
 
             // Отправляем событие об успешном создании
             _playlistCreated.postValue(name)
         }
-    }
-
-    // Обновить состояние кнопки "Создать"
-    private fun updateCreateButtonState() {
-        _isCreateButtonEnabled.value = !_playlistName.value.isNullOrEmpty()
     }
 }

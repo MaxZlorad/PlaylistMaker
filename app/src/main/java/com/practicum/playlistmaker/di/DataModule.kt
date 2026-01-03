@@ -19,6 +19,8 @@ import com.practicum.playlistmaker.settings.domain.api.StringRepository
 import com.practicum.playlistmaker.settings.data.repository.StringRepositoryImpl
 import org.koin.core.qualifier.named
 import androidx.room.Room
+import com.practicum.playlistmaker.library.data.repository.ImageStorageImpl
+import com.practicum.playlistmaker.library.domain.impl.ImageStorage
 
 val dataModule = module {
 
@@ -64,5 +66,10 @@ val dataModule = module {
         )
             .fallbackToDestructiveMigration() // При изменении схемы пересоздаёт БД
             .build()
+    }
+
+    // ImageStorage
+    single<ImageStorage> {
+        ImageStorageImpl(context = androidContext())
     }
 }

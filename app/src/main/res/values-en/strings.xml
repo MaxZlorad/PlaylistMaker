@@ -63,4 +63,9 @@
     <string name="no_playlists">No playlists</string>
 
     <string name="add_to_playlist">Add to playlist</string>
+
+    <plurals name="track_count">
+        <item quantity="one">%d track</item>
+        <item quantity="other">%d tracks</item>
+    </plurals>
 </resources>

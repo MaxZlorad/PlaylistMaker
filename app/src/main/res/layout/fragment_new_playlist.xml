@@ -44,7 +44,7 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <!-- ImageView для отображения выбранной обложки -->
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/coverImageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -52,7 +52,8 @@
                     android:visibility="gone"
                     tools:visibility="visible"
                     tools:src="@drawable/placeholder_album"
-                    android:contentDescription="@string/playlist_cover" />
+                    android:contentDescription="@string/playlist_cover"
+                    app:shapeAppearanceOverlay="@style/RoundedCornerImageView" />
 
                 <!-- Иконка "камера" (по центру) -->
                 <ImageView
@@ -68,16 +69,15 @@
             <!-- Поле ввода названия плейлиста -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/nameInputLayout"
+                style="@style/Playlist_Create_Text_Hint"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:hint="@string/playlist_name_hint"
-                app:hintTextColor="@color/hint_text_color"
+                app:boxStrokeColor="@drawable/input_line_selector"
                 app:boxBackgroundMode="outline"
-                app:boxBackgroundColor="@color/text_field_background"
-                app:boxStrokeColor="@color/text_field_stroke"
                 app:layout_constraintTop_toBottomOf="@id/coverImageContainer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -96,16 +96,15 @@
             <!-- Поле описания -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/descriptionInputLayout"
+                style="@style/Playlist_Create_Text_Hint"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:hint="@string/playlist_description_hint"
-                app:hintTextColor="@color/hint_text_color"
+                app:boxStrokeColor="@drawable/input_line_selector"
                 app:boxBackgroundMode="outline"
-                app:boxBackgroundColor="@color/text_field_background"
-                app:boxStrokeColor="@color/text_field_stroke"
                 app:layout_constraintTop_toBottomOf="@id/nameInputLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -117,7 +116,7 @@
                     android:inputType="text"
                     android:maxLines="3"
                     android:textColor="@color/black_white"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -137,6 +136,7 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:enabled="false"
+        app:backgroundTint="@null"
         android:background="@drawable/rounded_button_state"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -19,11 +19,16 @@ class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     // Привязать данные плейлиста к элементу списка
     fun bind(playlist: Playlist) {
+
         // Название плейлиста
         playlistName.text = playlist.name
 
         // Количество треков (склонение: "1 трек", "2 трека", "5 треков")
-        playlistTrackCount.text = getTrackCountText(playlist.trackCount)
+        playlistTrackCount.text = itemView.context.resources.getQuantityString(
+            R.plurals.track_count,
+            playlist.trackCount,
+            playlist.trackCount
+        )
 
         // Обложка плейлиста
         if (playlist.coverImagePath != null && File(playlist.coverImagePath).exists()) {
@@ -31,24 +36,10 @@ class PlaylistViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             Glide.with(itemView.context)
                 .load(playlist.coverImagePath)
                 .placeholder(R.drawable.placeholder_album)
-                .transform(RoundedCorners(8)) // Скругление 8dp
                 .into(playlistCover)
         } else {
             // Показываем placeholder
             playlistCover.setImageResource(R.drawable.placeholder_album)
-        }
-    }
-
-    // Получить строку с количеством треков (правильное склонение)
-    private fun getTrackCountText(count: Int): String {
-        val lastDigit = count % 10
-        val lastTwoDigits = count % 100
-
-        return when {
-            lastTwoDigits in 11..14 -> "$count треков"
-            lastDigit == 1 -> "$count трек"
-            lastDigit in 2..4 -> "$count трека"
-            else -> "$count треков"
         }
     }
 }

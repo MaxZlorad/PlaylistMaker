@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Фокус -->
+    <item android:state_focused="true" android:color="@color/gray_white"/>
+    <!-- По умолчанию -->
+    <item android:color="@color/gray_white"/>
+</selector>

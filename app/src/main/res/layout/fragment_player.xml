@@ -295,7 +295,7 @@
             android:paddingEnd="16dp"
             android:text="@string/add_to_playlist"
             android:textAlignment="center"
-            android:textColor="@color/black"
+            android:textColor="@color/black_white"
             android:textSize="19sp"
             android:fontFamily="@font/ys_display_medium"
             android:textStyle="normal"

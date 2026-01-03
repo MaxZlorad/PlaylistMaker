@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.library.domain.impl
 
+import android.net.Uri
 import com.practicum.playlistmaker.library.domain.models.Playlist
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ interface PlaylistsRepository {
     suspend fun createPlaylist(
         name: String,
         description: String?,
-        coverImagePath: String?
+        coverImageUri: Uri?
     ): Long
 
     // Получить все плейлисты пользователя.

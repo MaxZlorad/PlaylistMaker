@@ -1,8 +1,6 @@
 package com.practicum.playlistmaker.library.ui.fragments
 
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +16,10 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.practicum.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
 import androidx.activity.OnBackPressedCallback
+import android.content.res.ColorStateList
+import android.graphics.Color
+import androidx.core.content.ContextCompat
 
 // Fragment для создания нового плейлиста
 class NewPlaylistFragment : Fragment() {
@@ -57,7 +56,22 @@ class NewPlaylistFragment : Fragment() {
         setupTextFields() // Поля ввода
         observeViewModel() // Подписка на LiveData
         setupCreateButton() // Кнопка "Создать"
+
+        //setupInputLayoutStrokeColor()
     }
+
+    /*private fun setupInputLayoutStrokeColor() {
+        val strokeColor = ContextCompat.getColor(requireContext(), R.color.gray_white)
+
+        // Принудительно рисуем stroke с полной альфой
+        binding.nameInputLayout.setBoxStrokeColor(strokeColor)
+        binding.nameInputLayout.setBoxStrokeWidth(1)
+
+        // Хак: делаем stroke толще в неактивном, тоньше в активном
+        binding.nameInputLayout.setBoxStrokeWidthFocused(2)
+    }*/
+
+
 
     // Настройка обработки системной кнопки "Назад" (Back)
     private fun setupBackPressedHandler() {
@@ -124,14 +138,15 @@ class NewPlaylistFragment : Fragment() {
     // Подписка на изменения в ViewModel
     private fun observeViewModel() {
         // Наблюдаем за выбранным изображением обложки
-        viewModel.coverImageUri.observe(viewLifecycleOwner) { uri ->
-            if (uri != null) {
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            if (state.coverImageUri != null) {
                 // Показываем выбранное изображение
                 binding.coverImageView.visibility = View.VISIBLE
                 binding.cameraIcon.visibility = View.GONE
+                binding.coverImageContainer.background = null
 
                 Glide.with(this)
-                    .load(uri)
+                    .load(state.coverImageUri)
                     .centerCrop()
                     .into(binding.coverImageView)
             } else {
@@ -139,11 +154,8 @@ class NewPlaylistFragment : Fragment() {
                 binding.coverImageView.visibility = View.GONE
                 binding.cameraIcon.visibility = View.VISIBLE
             }
-        }
-
-        // Наблюдаем за состоянием кнопки "Создать"
-        viewModel.isCreateButtonEnabled.observe(viewLifecycleOwner) { isEnabled ->
-            binding.createButton.isEnabled = isEnabled
+            // Наблюдаем за состоянием кнопки "Создать"
+            binding.createButton.isEnabled = state.isCreateButtonEnabled
         }
 
         // Наблюдаем за событием успешного создания плейлиста
@@ -163,41 +175,7 @@ class NewPlaylistFragment : Fragment() {
     // Настройка кнопки "Создать"
     private fun setupCreateButton() {
         binding.createButton.setOnClickListener {
-            viewModel.createPlaylist { uri ->
-                saveImageToPrivateStorage(uri)
-            }
-        }
-    }
-
-    // Сохранить изображение в private storage приложения
-    private fun saveImageToPrivateStorage(uri: Uri): String? {
-        return try {
-            // Создаём папку для обложек плейлистов
-            val playlistCoversDir = File(
-                requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                "playlist_covers"
-            )
-
-            if (!playlistCoversDir.exists()) {
-                playlistCoversDir.mkdirs()
-            }
-
-            // Создаём уникальное имя файла
-            val fileName = "cover_${System.currentTimeMillis()}.jpg"
-            val file = File(playlistCoversDir, fileName)
-
-            // Копируем изображение в private storage
-            requireContext().contentResolver.openInputStream(uri)?.use { inputStream ->
-                FileOutputStream(file).use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            }
-
-            file.absolutePath // Возвращаем путь к файлу
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+            viewModel.createPlaylist()
         }
     }
 
