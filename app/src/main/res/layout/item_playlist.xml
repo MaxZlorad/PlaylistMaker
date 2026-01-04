@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout для элемента списка плейлистов (вертикальная раскладка).
+
+    По дизайну Figma:
+    - Размер: 160x196dp
+    - Обложка: 160x160dp (квадрат, скругление 8dp)
+    - Название: 12sp, YP Black
+    - Количество треков: 12sp, YP Black
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="160dp"
+    android:layout_height="196dp">
+
+    <!-- Обложка плейлиста (160x160dp, скругление 8dp) -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/playlistCover"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_album"
+        android:contentDescription="@string/playlist_cover"
+        app:shapeAppearanceOverlay="@style/RoundedCornerImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Название плейлиста -->
+    <TextView
+        android:id="@+id/playlistName"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/black_white"
+        android:textSize="12sp"
+        android:letterSpacing="0.033"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="The Beatles: Best Of The Best"
+        app:layout_constraintTop_toBottomOf="@id/playlistCover"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Количество треков -->
+    <TextView
+        android:id="@+id/playlistTrackCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black_white"
+        android:textSize="12sp"
+        android:letterSpacing="0.033"
+        android:maxLines="1"
+        tools:text="20 треков"
+        app:layout_constraintTop_toBottomOf="@id/playlistName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

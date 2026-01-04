@@ -12,10 +12,14 @@ import kotlinx.coroutines.launch
 import com.practicum.playlistmaker.player.domain.api.AudioPlayer
 import kotlinx.coroutines.Job
 import com.practicum.playlistmaker.player.domain.models.PlayerScreenState
+import com.practicum.playlistmaker.library.domain.api.PlaylistsInteractor
+import com.practicum.playlistmaker.library.domain.models.Playlist
+import com.practicum.playlistmaker.main.domain.models.SingleLiveEvent
 
 class PlayerViewModel(
     private val audioPlayer: AudioPlayer,
-    private val favoriteTracksInteractor: FavoriteTracksInteractor
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistsInteractor: PlaylistsInteractor
 ) : ViewModel() {
 
     private var progressJob: Job? = null
@@ -25,9 +29,48 @@ class PlayerViewModel(
     private val _screenState = MutableLiveData<PlayerScreenState>()
     val screenState: LiveData<PlayerScreenState> = _screenState
 
+    // LiveData для списка плейлистов
+    private val _playlists = MutableLiveData<List<Playlist>>()
+    val playlists: LiveData<List<Playlist>> = _playlists
+
+    // LiveData для статуса добавления трека, переделал на SingleLiveEvent
+    private val _addTrackStatus = SingleLiveEvent<AddTrackStatus>()
+    val addTrackStatus: SingleLiveEvent<AddTrackStatus> = _addTrackStatus
+
+    fun loadPlaylists() {
+        viewModelScope.launch {
+            playlistsInteractor.getAllPlaylists().collect { playlistsList ->
+                _playlists.postValue(playlistsList)
+            }
+        }
+    }
+
     init {
         // Инициализация с дефолтным состоянием
         _screenState.value = PlayerScreenState()
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            // Проверяем, есть ли трек в плейлисте
+            if (playlist.trackIds.contains(track.trackId)) {
+                _addTrackStatus.postValue(
+                    AddTrackStatus.AlreadyExists(playlist.name)
+                )
+            } else {
+                // Добавляем трек в плейлист (ТВОЙ ПОРЯДОК ПАРАМЕТРОВ!)
+                playlistsInteractor.addTrackToPlaylist(track, playlist)
+                _addTrackStatus.postValue(
+                    AddTrackStatus.Success(playlist.name)
+                )
+            }
+        }
+    }
+
+    // Статус добавления трека в плейлист
+    sealed class AddTrackStatus {
+        data class Success(val playlistName: String) : AddTrackStatus()
+        data class AlreadyExists(val playlistName: String) : AddTrackStatus()
     }
 
     fun preparePlayer(track: Track) {

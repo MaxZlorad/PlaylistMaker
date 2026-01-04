@@ -1,35 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
     android:background="@color/background_settings_color">
 
+    <!-- Кнопка "Новый плейлист" (используем существующий rounded_button.xml) -->
     <Button
         style="@style/ClearButton"
         android:id="@+id/createPlaylistButton"
         android:layout_height="36dp"
         android:paddingVertical="0dp"
         android:layout_marginTop="@dimen/padding_big"
-        android:text="@string/create_playlist" />
+        android:text="@string/new_playlist_title"
 
-    <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/error_search"
-        android:contentDescription="@string/empty_playlists_message" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5" />
 
-    <TextView
-        style="@style/ErrorsTextView"
+    <!-- RecyclerView для списка плейлистов -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playlistsRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:listitem="@layout/item_playlist"
+        app:layout_constraintTop_toBottomOf="@id/createPlaylistButton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Заглушка "Нет плейлистов" -->
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/emptyStateGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_medium"
-        android:gravity="center"
-        android:text="@string/empty_playlists_message"
-        android:textSize="@dimen/text_medium_max"
-        android:textColor="@color/black_white" />
+        android:visibility="visible"
+        app:constraint_referenced_ids="emptyStateImage,emptyStateText" />
 
+    <ImageView
+        android:id="@+id/emptyStateImage"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/placeholder_album"
+        android:contentDescription="@string/no_playlists"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/emptyStateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/no_playlists"
+        android:textColor="@color/black_white"
+        android:textSize="19sp"
+        app:layout_constraintTop_toBottomOf="@id/emptyStateImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

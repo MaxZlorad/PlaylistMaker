@@ -2,7 +2,11 @@ package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.di.NamedConstants.HISTORY_PREFS
 import com.practicum.playlistmaker.di.NamedConstants.SETTINGS_PREFS
-import com.practicum.playlistmaker.library.data.repository.FavoriteTracksRepository
+import com.practicum.playlistmaker.library.data.db.AppDatabase
+import com.practicum.playlistmaker.library.data.db.PlaylistDbConverter
+import com.practicum.playlistmaker.library.data.db.PlaylistTrackDbConverter
+import com.practicum.playlistmaker.library.domain.impl.FavoriteTracksRepository
+import com.practicum.playlistmaker.library.domain.impl.PlaylistsRepository
 import com.practicum.playlistmaker.search.data.repository.HistoryRepositoryImpl
 import com.practicum.playlistmaker.search.data.repository.SearchRepositoryImpl
 import com.practicum.playlistmaker.search.domain.api.HistoryRepository
@@ -11,7 +15,8 @@ import com.practicum.playlistmaker.settings.data.repository.SettingsRepositoryIm
 import com.practicum.playlistmaker.settings.domain.api.SettingsRepository
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import com.practicum.playlistmaker.library.domain.impl.FavoriteTracksRepositoryImpl
+import com.practicum.playlistmaker.library.data.repository.FavoriteTracksRepositoryImpl
+import com.practicum.playlistmaker.library.data.repository.PlaylistsRepositoryImpl
 
 
 val repositoryModule = module {
@@ -46,4 +51,21 @@ val repositoryModule = module {
             appDatabase = get() // Получаем экземпляр БД из dataModule через get()
         )
     }
+
+    // Конвертеры для плейлистов
+    single { PlaylistDbConverter() }
+    single { PlaylistTrackDbConverter() }
+
+    // Repository для плейлистов
+    single<PlaylistsRepository> {
+        PlaylistsRepositoryImpl(
+            playlistDao = get<AppDatabase>().playlistDao(),
+            playlistTrackDao = get<AppDatabase>().playlistTrackDao(),
+            playlistConverter = get(), // PlaylistDbConverter
+            trackConverter = get(), // PlaylistTrackDbConverter
+            imageStorage = get()
+        )
+    }
 }
+
+

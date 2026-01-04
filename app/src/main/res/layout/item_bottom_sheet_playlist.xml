@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layout для плейлиста в Bottom Sheet плеера.
+    Горизонтальная раскладка: обложка 45x45dp + название + количество треков
+-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="?attr/selectableItemBackground"
+    android:gravity="center_vertical">
+
+    <!-- Обложка плейлиста (45x45dp, скругление 2dp) -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/playlistCover"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/placeholder_track_poster"
+        android:contentDescription="@string/playlist_cover"
+        app:shapeAppearanceOverlay="@style/RoundedCorners_2dp" />
+
+    <!-- Контейнер для текста -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical">
+
+        <!-- Название плейлиста -->
+        <TextView
+            android:id="@+id/playlistName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black_white"
+            android:textSize="16sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:text="Мой плейлист" />
+
+        <!-- Количество треков -->
+        <TextView
+            android:id="@+id/playlistTrackCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/gray"
+            android:textSize="11sp"
+            tools:text="5 треков" />
+
+    </LinearLayout>
+
+</LinearLayout>

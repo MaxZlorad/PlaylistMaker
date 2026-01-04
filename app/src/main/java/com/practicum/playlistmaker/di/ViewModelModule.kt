@@ -9,6 +9,7 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import com.practicum.playlistmaker.library.ui.view_model.FavouriteTracksViewModel
 import com.practicum.playlistmaker.library.ui.view_model.PlaylistsViewModel
+import com.practicum.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 
 val viewModelModule = module {
     // Main
@@ -24,16 +25,39 @@ val viewModelModule = module {
     viewModel {
         PlayerViewModel(
             audioPlayer = get(), // AudioPlayer из DataModule
-            favoriteTracksInteractor = get() // FavoriteTracksInteractor из InteractorModule
+            favoriteTracksInteractor = get(), // FavoriteTracksInteractor из InteractorModule
+            playlistsInteractor = get()
         )
     }
 
     // MediaLibrary
     viewModel { MediaLibraryViewModel() }
-    viewModel { PlaylistsViewModel() }
+
+    // FavouriteTracks
     viewModel {
         FavouriteTracksViewModel(
             favoriteTracksInteractor = get() // FavoriteTracksInteractor из InteractorModule
+        )
+    }
+
+    // Playlists - список плейлистов
+    viewModel {
+        PlaylistsViewModel(
+            playlistsInteractor = get() // PlaylistsInteractor из InteractorModule
+        )
+    }
+
+    // ViewModel для списка плейлистов
+    viewModel {
+        PlaylistsViewModel(
+            playlistsInteractor = get() // PlaylistsInteractor из InteractorModule
+        )
+    }
+
+// ViewModel для создания плейлиста
+    viewModel {
+        NewPlaylistViewModel(
+            playlistsInteractor = get() // PlaylistsInteractor из InteractorModule
         )
     }
 }

@@ -42,7 +42,33 @@
     <string name="media_library">Медиатека</string>
     <string name="playlists">Плейлисты</string>
     <string name="favourite_tracks">Избранные треки</string>
-    <string name="empty_playlists_message">Вы не создали \nни одного плейлиста</string>
     <string name="empty_favourites_message">Ваша медиатека пуста</string>
-    <string name="create_playlist">Новый плейлист</string>
+
+    <string name="empty_playlists_message">Вы не создали \nни одного плейлиста</string>
+    <string name="playlist_created">Плейлист %s создан</string>
+
+    <!-- NEW PLAYLIST SCREEN -->
+    <string name="new_playlist_title">Новый плейлист</string>
+    <string name="playlist_name_hint">Название*</string>
+    <string name="playlist_description_hint">Описание</string>
+    <string name="create_playlist">Создать</string>
+    <string name="playlist_cover">Обложка плейлиста</string>
+    <string name="add_cover_image">Добавить обложку</string>
+
+    <!-- Диалог подтверждения выхода -->
+    <string name="exit_confirmation_title">Завершить создание плейлиста?</string>
+    <string name="exit_confirmation_message">Все несохраненные данные будут потеряны</string>
+    <string name="finish">Завершить</string>
+    <string name="cancel">Отмена</string>
+
+    <string name="no_playlists">Нет плейлистов</string>
+
+    <string name="add_to_playlist">Добавить в плейлист</string>
+
+    <plurals name="track_count">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

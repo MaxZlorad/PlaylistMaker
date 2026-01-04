@@ -33,4 +33,16 @@
     <color name="menu_item_container">#1A1B22</color>
 
     <color name="favorite_select">#F56B6C</color>
+
+    <!-- Text Field colors -->
+    <color name="text_field_background">#E6E8EB</color>
+    <color name="text_field_stroke">#AEAFB4</color>
+    <color name="hint_text_color">#AEAFB4</color>
+
+    <color name="yp_white">#FFFFFF</color>
+    <color name="yp_black">#1A1B22</color>
+    <color name="yp_light_gray">#E6E8EB</color>
+    <color name="yp_text_gray">#AEAFB4</color>
+
+    <color name="gray_white">#AEAFB4</color>
 </resources>

@@ -99,7 +99,10 @@ class SearchFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         // Сохраняем текущий текст поиска
-        outState.putString(SEARCH_QUERY_KEY, binding.searchInput.text.toString())
+        // Доп. проверим, что binding не null
+        _binding?.let { binding ->
+            outState.putString(SEARCH_QUERY_KEY, binding.searchInput.text.toString())}
+        //outState.putString(SEARCH_QUERY_KEY, binding.searchInput.text.toString())
     }
 
     // Настройка верхней панели (Toolbar)
