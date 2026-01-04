@@ -149,4 +149,7 @@
         <item name="android:textColorHint">@color/gray_white</item>
     </style>
 
+    <style name="RoundedCorners_2dp">
+        <item name="cornerSize">2dp</item>
+    </style>
 </resources>

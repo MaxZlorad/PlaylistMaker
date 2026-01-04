@@ -60,19 +60,6 @@ class NewPlaylistFragment : Fragment() {
         //setupInputLayoutStrokeColor()
     }
 
-    /*private fun setupInputLayoutStrokeColor() {
-        val strokeColor = ContextCompat.getColor(requireContext(), R.color.gray_white)
-
-        // Принудительно рисуем stroke с полной альфой
-        binding.nameInputLayout.setBoxStrokeColor(strokeColor)
-        binding.nameInputLayout.setBoxStrokeWidth(1)
-
-        // Хак: делаем stroke толще в неактивном, тоньше в активном
-        binding.nameInputLayout.setBoxStrokeWidthFocused(2)
-    }*/
-
-
-
     // Настройка обработки системной кнопки "Назад" (Back)
     private fun setupBackPressedHandler() {
         requireActivity().onBackPressedDispatcher.addCallback(

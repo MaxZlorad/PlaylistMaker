@@ -5,6 +5,7 @@
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -14,13 +15,14 @@
     android:gravity="center_vertical">
 
     <!-- Обложка плейлиста (45x45dp, скругление 2dp) -->
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/playlistCover"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:scaleType="centerCrop"
-        android:background="@drawable/rounded_cover_2dp"
-        android:contentDescription="@string/playlist_cover" />
+        android:src="@drawable/placeholder_track_poster"
+        android:contentDescription="@string/playlist_cover"
+        app:shapeAppearanceOverlay="@style/RoundedCorners_2dp" />
 
     <!-- Контейнер для текста -->
     <LinearLayout
