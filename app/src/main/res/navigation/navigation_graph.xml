@@ -28,6 +28,11 @@
         <action
             android:id="@+id/action_mediaLibraryFragment_to_newPlaylistFragment"
             app:destination="@id/newPlaylistFragment" />
+
+        <!-- Action для перехода на просмотр плейлиста -->
+        <action
+            android:id="@+id/action_mediaLibraryFragment_to_playlistDetailFragment"
+            app:destination="@id/playlistDetailFragment" />
     </fragment>
 
     <!-- Settings Fragment -->
@@ -66,6 +71,40 @@
             android:defaultValue="true"
             app:argType="boolean" />
 
+        <argument
+            android:name="playlistId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+
+    </fragment>
+
+    <!-- Playlist Detail Fragment -->
+    <fragment
+        android:id="@+id/playlistDetailFragment"
+        android:name="com.practicum.playlistmaker.library.ui.fragments.PlaylistDetailFragment"
+        android:label="Плейлист"
+        tools:layout="@layout/fragment_playlist_detail">
+
+        <!-- Аргумент: ID плейлиста -->
+        <argument
+            android:name="playlist_id"
+            app:argType="integer" />
+
+        <!-- Action для перехода на Player из плейлиста -->
+        <action
+            android:id="@+id/action_playlistDetailFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+
+        <!-- Скрыть BottomNavigationView на этом экране -->
+        <argument
+            android:name="hideBottomNav"
+            android:defaultValue="true"
+            app:argType="boolean" />
+
+        <!-- Action для редактирования плейлиста -->
+        <action
+            android:id="@+id/action_playlistDetailFragment_to_newPlaylistFragment"
+            app:destination="@id/newPlaylistFragment" />
     </fragment>
 
 </navigation>

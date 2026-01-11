@@ -17,5 +17,7 @@ data class PlaylistEntity(
 
     val trackIds: String, // JSON строка списка ID треков ["123", "456"]
 
-    val trackCount: Int = 0 // Количество треков
+    val trackCount: Int = 0, // Количество треков
+
+    val totalDuration: Long
 )

@@ -4,8 +4,9 @@ package com.practicum.playlistmaker.library.domain.models
 data class Playlist(
     val playlistId: Int,
     val name: String,
-    val description: String?,
-    val coverImagePath: String?,
+    val description: String?,// Описание плейлиста (может отсутствовать)
+    val coverImagePath: String?, // Путь к обложке плейлиста (может отсутствовать)
     val trackIds: List<String>, // Список ID треков (не JSON строка!)
-    val trackCount: Int
+    val trackCount: Int, // Количество треков в плейлисте
+    val totalDuration: Long = 0L // Общая длительность всех треков
 )

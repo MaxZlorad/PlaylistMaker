@@ -178,15 +178,15 @@ class SearchFragment : Fragment() {
     // Настройка RecyclerView для отображения результатов поиска
     private fun setupRecyclerView() {
         // Создаем адаптер для списка результатов
-        adapter = TrackAdapter(emptyList()) { track ->
-            // Обработчик клика на трек с защитой от частых кликов
-            if (clickDebounce()) {
-                // Добавляем трек в историю поиска
-                viewModel.addTrackToHistory(track)
-                // Открываем фрагмент плеера
-                openPlayerFragment(track)
+        adapter = TrackAdapter(
+            tracks = emptyList(),
+            onItemClick = { track ->
+                if (clickDebounce()) {
+                    viewModel.addTrackToHistory(track)
+                    openPlayerFragment(track)
+                }
             }
-        }
+        )
 
         // Настраиваем RecyclerView
         binding.tracksRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -214,17 +214,15 @@ class SearchFragment : Fragment() {
     // Настройка компонентов истории поиска
     private fun setupHistoryViews() {
         // Создаем адаптер для истории поиска
-        historyAdapter = TrackAdapter(emptyList()) { track ->
-            // Обработчик клика на трек в истории
-            if (clickDebounce()) {
-                // Добавляем трек в историю (обновляем время)
-                viewModel.addTrackToHistory(track)
-                // Открываем фрагмент плеера
-                //openPlayerFragment(track)
-                // ??? Navigation Component вместо FragmentManager
-                openPlayerFragment(track)
+        historyAdapter = TrackAdapter(
+            tracks = emptyList(),
+            onItemClick = { track ->
+                if (clickDebounce()) {
+                    viewModel.addTrackToHistory(track)
+                    openPlayerFragment(track)
+                }
             }
-        }
+        )
 
         // Настраиваем RecyclerView для истории
         binding.historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())

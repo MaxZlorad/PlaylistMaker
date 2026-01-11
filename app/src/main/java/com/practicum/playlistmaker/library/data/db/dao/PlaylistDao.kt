@@ -27,4 +27,8 @@ interface PlaylistDao {
     // Получить конкретный плейлист по ID.
     @Query("SELECT * FROM playlists WHERE playlistId = :playlistId")
     suspend fun getPlaylistById(playlistId: Int): PlaylistEntity?
+
+    // Удалить плейлист по ID
+    @Query("DELETE FROM playlists WHERE playlistId = :playlistId")
+    suspend fun deletePlaylist(playlistId: Int)
 }

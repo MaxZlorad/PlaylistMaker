@@ -18,7 +18,8 @@ class PlaylistDbConverter {
             description = entity.description,
             coverImagePath = entity.coverImagePath,
             trackIds = parseTrackIds(entity.trackIds), // JSON → List
-            trackCount = entity.trackCount
+            trackCount = entity.trackCount,
+            totalDuration = entity.totalDuration
         )
     }
 
@@ -30,7 +31,8 @@ class PlaylistDbConverter {
             description = playlist.description,
             coverImagePath = playlist.coverImagePath,
             trackIds = serializeTrackIds(playlist.trackIds), // List → JSON
-            trackCount = playlist.trackCount
+            trackCount = playlist.trackCount,
+            totalDuration = playlist.totalDuration
         )
     }
 

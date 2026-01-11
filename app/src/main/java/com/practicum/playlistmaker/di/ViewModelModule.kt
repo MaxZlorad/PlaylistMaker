@@ -10,6 +10,7 @@ import org.koin.dsl.module
 import com.practicum.playlistmaker.library.ui.view_model.FavouriteTracksViewModel
 import com.practicum.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import com.practicum.playlistmaker.library.ui.view_model.NewPlaylistViewModel
+import com.practicum.playlistmaker.library.ui.view_model.PlaylistDetailViewModel
 
 val viewModelModule = module {
     // Main
@@ -60,4 +61,6 @@ val viewModelModule = module {
             playlistsInteractor = get() // PlaylistsInteractor из InteractorModule
         )
     }
+
+    viewModel { PlaylistDetailViewModel(get()) }
 }

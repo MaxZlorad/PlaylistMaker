@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E8EB">
+
+    <!-- Обложка плейлиста -->
+    <ImageView
+        android:id="@+id/playlistCover"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:scaleType="center"
+        android:src="@drawable/placeholder_album"
+        android:contentDescription="@string/playlist_cover" />
+
+    <!-- Toolbar с кнопкой назад -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/black" />
+
+    <!-- ИНФОРМАЦИЯ О ПЛЕЙЛИСТЕ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="360dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="16dp"
+        android:background="@color/text_field_background">
+
+        <TextView
+            android:id="@+id/playlistName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ys_display_bold"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:lineHeight="28sp"
+            tools:text="Best songs 2223" />
+
+        <TextView
+            android:id="@+id/playlistDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:lineHeight="21sp"
+            android:visibility="gone"
+            tools:text="2222"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/playlistDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ys_display_regular"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:lineHeight="21sp"
+                tools:text="45 минут" />
+
+            <View
+                android:layout_width="13dp"
+                android:layout_height="13dp"
+                android:background="@drawable/ic_separator_dot"
+                android:backgroundTint="@color/black" />
+
+            <TextView
+                android:id="@+id/playlistTrackCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ys_display_regular"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:lineHeight="21sp"
+                tools:text="20 треков" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/shareButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_share"
+                android:contentDescription="@string/share_app"
+                app:tint="@color/black" />
+
+            <ImageView
+                android:id="@+id/menuButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_more"
+                android:contentDescription="@string/menu"
+                app:tint="@color/black" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- BOTTOM SHEET - список треков -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/bottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bottom_sheet_bg"
+        android:clipToPadding="false"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_peekHeight="266dp"
+        app:behavior_hideable="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Хендл для перетаскивания -->
+            <View
+                android:layout_width="50dp"
+                android:layout_height="4dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/drag_handle_bg" />
+
+            <!-- Для "нет треков" -->
+            <TextView
+                android:id="@+id/emptyTracksMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="16dp"
+                android:fontFamily="@font/ys_display_medium"
+                android:textColor="@color/black_white"
+                android:textSize="19sp"
+                android:textAlignment="center"
+                android:text="@string/empty_playlist_message"
+                android:visibility="gone" />
+
+            <!-- Список треков -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tracksRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/item_track"
+                tools:itemCount="4" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Затемнение фона при показе диалога -->
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone" />
+
+    <!-- Bottom Sheet меню (три точки) -->
+    <LinearLayout
+        android:id="@+id/menuBottomSheet"
+        android:layout_width="match_parent"
+        android:layout_height="383dp"
+        android:orientation="vertical"
+        android:background="@drawable/bottom_sheet_bg"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        app:behavior_peekHeight="0dp"
+        app:behavior_hideable="true">
+
+        <!-- Хендл: 50x4dp, top: 8dp, radius: 44dp -->
+        <View
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/drag_handle_bg" />
+
+        <!-- Превью плейлиста: top: 24dp (от верха BS), height: 61dp -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:orientation="horizontal"
+            android:paddingStart="13dp"
+            android:paddingEnd="16dp"
+            android:paddingVertical="8dp"
+            android:gravity="center_vertical"
+            android:background="#FFFFFF">
+
+            <!-- Обложка: 45x45dp, radius: 2dp -->
+            <ImageView
+                android:id="@+id/menuPlaylistCover"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder_album" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical">
+
+                <!-- Название: left: 66dp, top: 14dp (от начала блока) -->
+                <TextView
+                    android:id="@+id/menuPlaylistName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="#1A1B22"
+                    android:textSize="16sp"
+                    android:lineHeight="19sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="Название плейлиста" />
+
+                <!-- Количество: left: 66dp, top: 34dp, color: #AEAFB4 -->
+                <TextView
+                    android:id="@+id/menuPlaylistTrackCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:fontFamily="@font/ys_display_regular"
+                    android:textColor="#AEAFB4"
+                    android:textSize="11sp"
+                    android:lineHeight="13sp"
+                    android:text="10 треков" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Разделитель (между превью и пунктами) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E6E8EB" />
+
+        <!-- Пункт меню "Поделиться": height: 61dp -->
+        <TextView
+            android:id="@+id/menuShare"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="#1A1B22"
+            android:textSize="16sp"
+            android:lineHeight="19sp"
+            android:background="#FFFFFF"
+            android:text="@string/share_playlist" />
+
+        <!-- Разделитель -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E6E8EB" />
+
+        <!-- Пункт меню "Редактировать": height: 61dp -->
+        <TextView
+            android:id="@+id/menuEdit"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="#1A1B22"
+            android:textSize="16sp"
+            android:lineHeight="19sp"
+            android:background="#FFFFFF"
+            android:text="@string/edit_playlist_info" />
+
+        <!-- Разделитель -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E6E8EB" />
+
+        <!-- Пункт меню "Удалить плейлист": height: 61dp -->
+        <TextView
+            android:id="@+id/menuDelete"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:gravity="center_vertical"
+            android:fontFamily="@font/ys_display_regular"
+            android:textColor="#1A1B22"
+            android:textSize="16sp"
+            android:lineHeight="19sp"
+            android:background="#FFFFFF"
+            android:text="@string/delete_playlist" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
