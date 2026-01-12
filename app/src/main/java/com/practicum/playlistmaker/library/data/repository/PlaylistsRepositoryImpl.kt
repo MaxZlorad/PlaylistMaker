@@ -184,16 +184,39 @@ class PlaylistsRepositoryImpl(
     ) {
         val currentPlaylist = playlistDao.getPlaylistById(playlistId) ?: return
 
+        // Обработка нового Uri (если это content://)
+        val oldCoverPath = currentPlaylist.coverImagePath
+
+        val newCoverPath = if (coverImagePath != null && coverImagePath.startsWith("content://")) {
+            // Новая картинка выбрана - копируем в постоянное хранилище
+            imageStorage.saveImage(Uri.parse(coverImagePath))
+        } else {
+            // Старый путь или null
+            coverImagePath
+        }
+
         val playlistEntity = PlaylistEntity(
             playlistId = playlistId,
             name = title,
             description = description,
-            coverImagePath = coverImagePath,
+            coverImagePath = newCoverPath, //coverImagePath,
             trackIds = currentPlaylist.trackIds,
             trackCount = currentPlaylist.trackCount,
             totalDuration = currentPlaylist.totalDuration
         )
 
         playlistDao.updatePlaylist(playlistEntity)
+
+        if (oldCoverPath != null && oldCoverPath != newCoverPath &&
+            !oldCoverPath.startsWith("content://") && oldCoverPath.startsWith("/storage/")) {
+            try {
+                val oldFile = java.io.File(oldCoverPath)
+                if (oldFile.exists()) {
+                    oldFile.delete()
+                }
+            } catch (e: Exception) {
+                // Игнор ошибки удаления
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ import com.practicum.playlistmaker.library.ui.view_model.FavouriteTracksViewMode
 import com.practicum.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import com.practicum.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 import com.practicum.playlistmaker.library.ui.view_model.PlaylistDetailViewModel
+import org.koin.android.ext.koin.androidApplication
 
 val viewModelModule = module {
     // Main
@@ -55,12 +56,17 @@ val viewModelModule = module {
         )
     }
 
-// ViewModel для создания плейлиста
+    // ViewModel для создания плейлиста
     viewModel {
         NewPlaylistViewModel(
             playlistsInteractor = get() // PlaylistsInteractor из InteractorModule
         )
     }
 
-    viewModel { PlaylistDetailViewModel(get()) }
+    viewModel {
+        PlaylistDetailViewModel(
+            application = androidApplication(),
+            playlistsInteractor = get()
+        )
+    }
 }

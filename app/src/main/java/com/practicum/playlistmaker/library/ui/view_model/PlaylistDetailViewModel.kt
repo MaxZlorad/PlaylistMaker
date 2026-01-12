@@ -1,17 +1,19 @@
 package com.practicum.playlistmaker.library.ui.view_model
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.domain.api.PlaylistsInteractor
 import com.practicum.playlistmaker.library.domain.models.PlaylistDetailState
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class PlaylistDetailViewModel(
-    private val playlistsInteractor: PlaylistsInteractor  // Интерактор для работы с плейлистами
+    private val playlistsInteractor: PlaylistsInteractor,  // Интерактор для работы с плейлистами
+    private val application: Application
 ) : ViewModel() {
 
     // LiveData для состояния экрана
@@ -67,7 +69,11 @@ class PlaylistDetailViewModel(
     }
 
     fun formatDuration(durationMs: Long): String {
-        val minutes = SimpleDateFormat("mm", Locale.getDefault()).format(durationMs)
-        return "$minutes минут"
+        val minutes = TimeUnit.MILLISECONDS.toMinutes(durationMs).toInt()
+        return application.resources.getQuantityString(
+            R.plurals.minutes,
+            minutes,
+            minutes
+        )
     }
 }

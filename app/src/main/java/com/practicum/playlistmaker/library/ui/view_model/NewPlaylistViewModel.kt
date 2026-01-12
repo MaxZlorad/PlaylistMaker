@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.library.ui.view_model
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,8 @@ class NewPlaylistViewModel(
     // Режим редактирования
     private var playlistId: Int? = null
     private var isEditMode = false
+    private var originalCoverPath: String? = null
+    private var coverWasChanged = false
 
     /// Функции:
 
@@ -36,17 +39,23 @@ class NewPlaylistViewModel(
     fun loadPlaylist(id: Int) {
         playlistId = id
         isEditMode = true
+        coverWasChanged = false
 
         viewModelScope.launch {
             val (playlist, _) = playlistsInteractor.getPlaylistWithTracks(id).first()
+            originalCoverPath = playlist.coverImagePath
+
+            Log.d("NewPlaylistVM", "loadPlaylist: originalCoverPath = $originalCoverPath")
+
             _state.value = NewPlaylistState(
                 playlistName = playlist.name,
                 playlistDescription = playlist.description ?: "",
                 coverImageUri = playlist.coverImagePath?.let { path ->
+                    // ← ИСПРАВЬ: используй Uri.fromFile для локальных файлов
                     if (path.startsWith("content://") || path.startsWith("file://")) {
-                        Uri.parse(path) // Уже Uri
+                        Uri.parse(path)
                     } else {
-                        Uri.fromFile(File(path)) // Локальный файл
+                        Uri.fromFile(File(path))
                     }
                 },
                 isCreateButtonEnabled = true,
@@ -59,7 +68,7 @@ class NewPlaylistViewModel(
     fun updatePlaylistName(name: String) {
         _state.value = _state.value?.copy(
             playlistName = name,
-            isCreateButtonEnabled = name.isNotEmpty()
+            isCreateButtonEnabled = name.trim().isNotEmpty()
         )
     }
 
@@ -71,6 +80,7 @@ class NewPlaylistViewModel(
     // Установить URI выбранного изображения обложки
     fun setCoverImage(uri: Uri?) {
         _state.value = _state.value?.copy(coverImageUri = uri)
+        coverWasChanged = true
     }
 
     // Проверить, есть ли несохранённые данные
@@ -85,18 +95,25 @@ class NewPlaylistViewModel(
     fun createPlaylist() {
         val currentState = _state.value ?: return
         val name = currentState.playlistName
-        if (name.isEmpty()) return
+        if (name.trim().isEmpty()) return
 
         viewModelScope.launch {
             if (isEditMode && playlistId != null) {
                 // Режим редактирования
+                val coverPath = when { // Определяем путь к обложке
+                    !coverWasChanged && originalCoverPath != null -> { originalCoverPath }
+                    currentState.coverImageUri != null -> { currentState.coverImageUri.toString() }
+                    else -> { null
+                    }
+                }
                 playlistsInteractor.updatePlaylist(
                     playlistId = playlistId!!,
                     title = name,
                     description = currentState.playlistDescription.takeIf { it.isNotEmpty() } ?: "",
-                    coverImagePath = currentState.coverImageUri?.toString()
+                    coverImagePath = coverPath
                 )
             } else {
+
                 // Режим создания // Создаём плейлист через Interactor
                 playlistsInteractor.createPlaylist(
                     name = name,

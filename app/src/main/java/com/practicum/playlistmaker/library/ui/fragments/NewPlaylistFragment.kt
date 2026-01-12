@@ -17,6 +17,7 @@ import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.practicum.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 
 // Fragment для создания нового плейлиста
 class NewPlaylistFragment : Fragment() {
@@ -131,10 +132,9 @@ class NewPlaylistFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             if (state.coverImageUri != null) {
                 // Показываем выбранное изображение
-                binding.coverImageContainer.visibility = View.VISIBLE
-                binding.coverImageView.visibility = View.VISIBLE
-                binding.cameraIcon.visibility = View.GONE
-                //binding.coverImageContainer.background = null // По ТЗ не ясно надо ли
+                binding.coverImageContainer.isVisible = true
+                binding.coverImageView.isVisible = true
+                binding.cameraIcon.isVisible = false
 
                 Glide.with(this)
                     .load(state.coverImageUri)
@@ -144,14 +144,13 @@ class NewPlaylistFragment : Fragment() {
                 // Режим редактирования → placeholder, либо создание → иконка камеры
                 if (state.isEditMode) {
                     // Показываем placeholder (в задании не ясны подробности)
-                    binding.coverImageView.visibility = View.VISIBLE
-                    binding.cameraIcon.visibility = View.GONE
+                    binding.coverImageView.isVisible = true
+                    binding.cameraIcon.isVisible = false
                     binding.coverImageView.setImageResource(R.drawable.placeholder_album)
-                    //binding.coverImageContainer.background = null // По ТЗ не ясно надо ли
                 } else {
                     // Создание → показать иконку камеры
-                    binding.coverImageView.visibility = View.GONE
-                    binding.cameraIcon.visibility = View.VISIBLE
+                    binding.coverImageView.isVisible = false
+                    binding.cameraIcon.isVisible = true
                 }
             }
 

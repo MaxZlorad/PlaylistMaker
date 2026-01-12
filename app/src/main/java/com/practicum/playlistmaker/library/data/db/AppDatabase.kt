@@ -10,7 +10,7 @@ import com.practicum.playlistmaker.library.data.db.entity.PlaylistEntity
 import com.practicum.playlistmaker.library.data.db.entity.PlaylistTrackEntity
 
 @Database(
-    version = 1, // м.б. новая, т.к. уже с тремя табл.?
+    version = 2, // м.б. новая, т.к. уже с тремя табл.?
     entities = [
         TrackEntity::class,        // 1. Избранные треки
         PlaylistEntity::class,     // 2. Плейлисты
