@@ -35,11 +35,12 @@ class RootActivity : AppCompatActivity() {
         // Связываем BottomNavigationView с NavController
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        // Скрываем BottomNavigationView при переходе на PlayerFragment или PlaylistFragment
+        // Скрываем BottomNavigationView при переходе на некоторые фрагменты
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val isBottomNavVisible = destination.id !in setOf(
                 R.id.playerFragment,
-                R.id.newPlaylistFragment
+                R.id.newPlaylistFragment,
+                R.id.playlistDetailFragment
             )
             binding.bottomNavigationView.isVisible = isBottomNavVisible
             binding.dividerLine.isVisible = isBottomNavVisible

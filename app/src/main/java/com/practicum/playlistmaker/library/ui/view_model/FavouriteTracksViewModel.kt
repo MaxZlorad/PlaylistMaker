@@ -9,19 +9,19 @@ import com.practicum.playlistmaker.library.domain.models.FavoriteTracksState
 import kotlinx.coroutines.launch
 
 class FavouriteTracksViewModel(
-    private val favoriteTracksInteractor: FavoriteTracksInteractor // ✅ Интерактор для работы с БД
+    private val favoriteTracksInteractor: FavoriteTracksInteractor // Интерактор для работы с БД
 ) : ViewModel() {
 
-    // ✅ LiveData для состояния экрана (пусто или есть треки)
+    // LiveData для состояния экрана (пусто или есть треки)
     private val _state = MutableLiveData<FavoriteTracksState>()
     val state: LiveData<FavoriteTracksState> = _state
 
-    // ✅ В init загружаем треки сразу при создании ViewModel
+    // В init загружаем треки сразу при создании ViewModel
     init {
         loadFavoriteTracks()
     }
 
-    // ✅ Метод загрузки избранных треков из БД
+    // Метод загрузки избранных треков из БД
     fun loadFavoriteTracks() {
         // Запускаем корутину в viewModelScope
         viewModelScope.launch {

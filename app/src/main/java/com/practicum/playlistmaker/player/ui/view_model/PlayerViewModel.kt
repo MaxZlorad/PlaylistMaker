@@ -58,7 +58,7 @@ class PlayerViewModel(
                     AddTrackStatus.AlreadyExists(playlist.name)
                 )
             } else {
-                // Добавляем трек в плейлист (ТВОЙ ПОРЯДОК ПАРАМЕТРОВ!)
+                // Добавляем трек в плейлист
                 playlistsInteractor.addTrackToPlaylist(track, playlist)
                 _addTrackStatus.postValue(
                     AddTrackStatus.Success(playlist.name)
@@ -151,12 +151,6 @@ class PlayerViewModel(
             currentPosition = 0L,
             playbackState = PlaybackState.Completed
         )
-    }
-
-    fun getFormattedTime(millis: Long): String {
-        val seconds = (millis / 1000) % 60
-        val minutes = (millis / (1000 * 60)) % 60
-        return String.format("%02d:%02d", minutes, seconds)
     }
 
     // Вызывается при нажатии на "Лайк"

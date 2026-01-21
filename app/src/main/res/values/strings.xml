@@ -13,8 +13,10 @@
     <string name="share_message">Посмотрите курс по Android-разработке в Практикуме:
         https://practicum.yandex.ru/profile/android-developer/</string>
     <string name="support_email">zlod.@inbox.ru</string>
-    <string name="support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
-    <string name="support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="support_subject">
+        Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="support_message">
+        Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="choose_email_client">Выберите почтовый клиент</string>
     <string name="terms_url">https://yandex.ru/legal/practicum_offer/</string>
 
@@ -25,7 +27,8 @@
     <string name="track_time">0:01</string>
 
     <string name="error_search">"Ничего не нашлось"</string>
-    <string name="error_internet">"Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету"</string>
+    <string name="error_internet">
+        "Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету"</string>
     <string name="refresh_text">"Обновить"</string>
 
     <string name="search_history">Вы искали</string>
@@ -66,9 +69,35 @@
     <string name="add_to_playlist">Добавить в плейлист</string>
 
     <plurals name="track_count">
-        <item quantity="one">%d трек</item>
-        <item quantity="few">%d трека</item>
-        <item quantity="many">%d треков</item>
+        <item quantity="one">%d трек</item> <!-- 1, 21, 31... (но не 11) -->
+        <item quantity="few">%d трека</item> <!-- 2-4, 22-24... (но не 12-14) -->
+        <item quantity="many">%d треков</item> <!-- 0, 5-20, 25-30... -->
         <item quantity="other">%d треков</item>
+    </plurals>
+
+    <string name="menu">Меню</string>
+    <!-- Диалог удаления трека -->
+    <string name="delete_track_dialog_title">Хотите удалить трек?</string>
+    <string name="dialog_no">НЕТ</string>
+    <string name="dialog_yes">ДА</string>
+
+    <!-- Плейлист - меню и диалоги -->
+    <string name="share_playlist">Поделиться</string>
+    <string name="edit_playlist_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+    <string name="delete_playlist_dialog_message">Хотите удалить плейлист «%s»?</string>
+    <string name="empty_playlist_share_message">
+        В этом плейлисте нет списка треков, которым можно поделиться</string>
+
+    <string name="edit_playlist">Редактировать</string>
+    <string name="save_playlist">Сохранить</string>
+
+    <string name="empty_playlist_message">В этом плейлисте пока нет треков</string>
+
+    <plurals name="minutes">
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минут</item>
     </plurals>
 </resources>

@@ -51,8 +51,7 @@ class MediaLibraryFragment : Fragment() {
 
     private fun setupViewPager() {
         // Создаем адаптер для ViewPager с вкладками
-        // requireActivity() передаем вместо this, так как фрагмент не является Context
-        binding.viewPager.adapter = MediaLibraryViewPagerAdapter(requireActivity())
+        binding.viewPager.adapter = MediaLibraryViewPagerAdapter(this)
 
         // Связываем TabLayout с ViewPager
         tabLayoutMediator = TabLayoutMediator(
@@ -66,7 +65,7 @@ class MediaLibraryFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Важно: отключаем медиатор и очищаем binding при уничтожении View
+        // Отключаем медиатор и очищаем binding при уничтожении View
         tabLayoutMediator.detach()
         _binding = null
     }

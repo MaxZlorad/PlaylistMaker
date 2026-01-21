@@ -23,9 +23,10 @@ class FavouriteTracksFragment : Fragment() {
     private val viewModel: FavouriteTracksViewModel by viewModel()
 
     // Переиспользуем адаптер из экрана поиска
-    private val trackAdapter = TrackAdapter { track ->
-        onTrackClick(track)
-    }
+    private val trackAdapter = TrackAdapter(
+        tracks = emptyList(),
+        onItemClick = { track -> onTrackClick(track) }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,14 +40,14 @@ class FavouriteTracksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // ✅ Настройка RecyclerView
+        // Настройка RecyclerView
         setupRecyclerView()
 
-        // ✅ Подписываемся на изменения состояния
+        // Подписываемся на изменения состояния
         observeViewModel()
     }
 
-    // ✅ НОВОЕ: Настройка RecyclerView для списка треков
+    // Настройка RecyclerView для списка треков
     private fun setupRecyclerView() {
         binding.recyclerViewFavoriteTracks.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -54,7 +55,7 @@ class FavouriteTracksFragment : Fragment() {
         }
     }
 
-    // ✅ НОВОЕ: Подписка на изменения состояния
+    // Подписка на изменения состояния
     private fun observeViewModel() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -78,12 +79,8 @@ class FavouriteTracksFragment : Fragment() {
         }
     }
 
-    // ✅ НОВОЕ: Обработка клика по треку
+    // бработка клика по треку
     private fun onTrackClick(track: Track) {
-        // Переходим на экран плеера через Navigation Component
-        // Используем action из MediaLibraryFragment к PlayerFragment
-        //val action = MediaLibraryFragmentDirections.actionMediaLibraryFragmentToPlayerFragment(track)
-        //findNavController().navigate(action)
 
         val bundle = Bundle().apply {
             putSerializable("track", track)
@@ -91,7 +88,7 @@ class FavouriteTracksFragment : Fragment() {
         findNavController().navigate(R.id.playerFragment, bundle)
     }
 
-    // ✅ НОВОЕ: Обновляем список при возвращении на экран
+    // Обновляем список при возвращении на экран
     override fun onResume() {
         super.onResume()
         // Перезагружаем треки, чтобы обновить isFavorite

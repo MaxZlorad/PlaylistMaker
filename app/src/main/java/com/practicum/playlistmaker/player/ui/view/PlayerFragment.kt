@@ -24,6 +24,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.player.ui.BottomSheetPlaylistAdapter
+import com.practicum.playlistmaker.main.utils.getFormattedTime
 
 class PlayerFragment : Fragment() {
 
@@ -107,7 +108,7 @@ class PlayerFragment : Fragment() {
         // Основная информация о треке
         trackNameView.text = track.trackName
         artistNameView.text = track.artistName
-        currentTimeView.text = viewModel.getFormattedTime(0L)
+        currentTimeView.text = getFormattedTime(0L)
 
         // Блок информации о продолжительности
         setupOptionalField(
@@ -195,7 +196,7 @@ class PlayerFragment : Fragment() {
             updatePlaybackUI(state.playbackState)
 
             // Обновляем позицию
-            currentTimeView.text = viewModel.getFormattedTime(state.currentPosition)
+            currentTimeView.text = getFormattedTime(state.currentPosition)
 
             // Обновляем кнопку избранного
             updateFavoriteButton(state.isFavorite)
@@ -244,7 +245,7 @@ class PlayerFragment : Fragment() {
             }
             is PlaybackState.Completed -> {
                 buttonPlayPause.setImageResource(R.drawable.ic_play_100)
-                currentTimeView.text = viewModel.getFormattedTime(0L)
+                currentTimeView.text = getFormattedTime(0L)
             }
             else -> {}
         }

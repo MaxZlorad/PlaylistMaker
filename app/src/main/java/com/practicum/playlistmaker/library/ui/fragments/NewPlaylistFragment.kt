@@ -17,9 +17,7 @@ import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.practicum.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import androidx.activity.OnBackPressedCallback
-import android.content.res.ColorStateList
-import android.graphics.Color
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 
 // Fragment для создания нового плейлиста
 class NewPlaylistFragment : Fragment() {
@@ -50,14 +48,20 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Загрузка плейлиста для редактирования
+        val playlistId = arguments?.getInt("playlistId", -1) ?: -1
+        if (playlistId != -1) {
+            viewModel.loadPlaylist(playlistId)
+            binding.toolbar.setTitle(R.string.edit_playlist) // "Редактировать"
+            binding.createButton.setText(R.string.save_playlist) // "Сохранить"
+        }
+
         setupToolbar() // Кнопка "Назад" в Toolbar
         setupBackPressedHandler() // Обработка системной кнопки Back
         setupCoverImagePicker() // Выбор изображения
         setupTextFields() // Поля ввода
         observeViewModel() // Подписка на LiveData
         setupCreateButton() // Кнопка "Создать"
-
-        //setupInputLayoutStrokeColor()
     }
 
     // Настройка обработки системной кнопки "Назад" (Back)
@@ -128,19 +132,36 @@ class NewPlaylistFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) { state ->
             if (state.coverImageUri != null) {
                 // Показываем выбранное изображение
-                binding.coverImageView.visibility = View.VISIBLE
-                binding.cameraIcon.visibility = View.GONE
-                binding.coverImageContainer.background = null
+                binding.coverImageContainer.isVisible = true
+                binding.coverImageView.isVisible = true
+                binding.cameraIcon.isVisible = false
 
                 Glide.with(this)
                     .load(state.coverImageUri)
                     .centerCrop()
                     .into(binding.coverImageView)
             } else {
-                // Показываем placeholder
-                binding.coverImageView.visibility = View.GONE
-                binding.cameraIcon.visibility = View.VISIBLE
+                // Режим редактирования → placeholder, либо создание → иконка камеры
+                if (state.isEditMode) {
+                    // Показываем placeholder (в задании не ясны подробности)
+                    binding.coverImageView.isVisible = true
+                    binding.cameraIcon.isVisible = false
+                    binding.coverImageView.setImageResource(R.drawable.placeholder_album)
+                } else {
+                    // Создание → показать иконку камеры
+                    binding.coverImageView.isVisible = false
+                    binding.cameraIcon.isVisible = true
+                }
             }
+
+            // Проверяем, что текст в поле отличается от state (чтобы не сбивать курсор)
+            if (binding.nameEditText.text.toString() != state.playlistName) {
+                binding.nameEditText.setText(state.playlistName)
+            }
+            if (binding.descriptionEditText.text.toString() != state.playlistDescription) {
+                binding.descriptionEditText.setText(state.playlistDescription)
+            }
+
             // Наблюдаем за состоянием кнопки "Создать"
             binding.createButton.isEnabled = state.isCreateButtonEnabled
         }

@@ -50,7 +50,6 @@ class PlaylistsFragment : Fragment() {
             requireActivity().findNavController(R.id.fragmentContainerView).navigate(
                 R.id.action_mediaLibraryFragment_to_newPlaylistFragment
             )
-            //findNavController().navigate(R.id.action_mediaLibraryFragment_to_newPlaylistFragment)
         }
     }
 
@@ -94,7 +93,11 @@ class PlaylistsFragment : Fragment() {
 
     private fun setupAdapter() {
         playlistAdapter = PlaylistAdapter { playlist ->
-            // Обработка клика на плейлист (похоже в след. спринте)
+            // Переход на экран просмотра плейлиста
+            findNavController().navigate(
+                R.id.action_mediaLibraryFragment_to_playlistDetailFragment,
+                PlaylistDetailFragment.createArgs(playlist.playlistId)
+            )
         }
     }
 

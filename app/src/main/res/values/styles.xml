@@ -152,4 +152,16 @@
     <style name="RoundedCorners_2dp">
         <item name="cornerSize">2dp</item>
     </style>
+
+    <!-- Стиль для диалога -->
+
+    <style name="CustomAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+    </style>
+
+    <!-- Скругление углов 4dp -->
+    <style name="DialogCorners">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">4dp</item>
+    </style>
 </resources>

@@ -18,6 +18,9 @@ interface PlaylistsRepository {
     // Получить все плейлисты пользователя.
     fun getAllPlaylists(): Flow<List<Playlist>>
 
+    // Получить конкретный плейлист по ID
+    suspend fun getPlaylistById(playlistId: Int): Playlist?
+
     // Добавить трек в плейлист.
     suspend fun addTrackToPlaylist(track: Track, playlist: Playlist)
 
@@ -26,4 +29,15 @@ interface PlaylistsRepository {
 
     // Получить треки плейлиста по списку ID.
     suspend fun getPlaylistTracks(trackIds: List<String>): List<Track>
+
+    // Удалить плейлист
+    suspend fun deletePlaylist(playlistId: Int)
+
+    // Обновить плейлист
+    suspend fun updatePlaylist(
+        playlistId: Int,
+        title: String,
+        description: String,
+        coverImagePath: String?
+    )
 }

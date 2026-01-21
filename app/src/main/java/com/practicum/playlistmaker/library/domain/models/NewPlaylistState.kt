@@ -6,5 +6,6 @@ data class NewPlaylistState(
     val playlistName: String = "",
     val playlistDescription: String = "",
     val coverImageUri: Uri? = null,
-    val isCreateButtonEnabled: Boolean = false
+    val isCreateButtonEnabled: Boolean = false,
+    val isEditMode: Boolean = false
 )

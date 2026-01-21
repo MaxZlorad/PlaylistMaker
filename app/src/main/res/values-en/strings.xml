@@ -65,7 +65,30 @@
     <string name="add_to_playlist">Add to playlist</string>
 
     <plurals name="track_count">
-        <item quantity="one">%d track</item>
-        <item quantity="other">%d tracks</item>
+        <item quantity="one">%d track</item> <!-- 1 track -->
+        <item quantity="other">%d tracks</item> <!-- 0, 2, 3, 4... tracks -->
+    </plurals>
+
+    <string name="menu">Menu</string>
+    <string name="delete_track_dialog_title">Delete track?</string>
+    <string name="dialog_no">NO</string>
+    <string name="dialog_yes">YES</string>
+
+    <!-- Playlist - menu and dialogs -->
+    <string name="share_playlist">Share</string>
+    <string name="edit_playlist_info">Edit information</string>
+    <string name="delete_playlist">Delete playlist</string>
+    <string name="delete_playlist_dialog_message">Do you want to delete playlist "%s"?</string>
+    <string name="empty_playlist_share_message">
+        There are no tracks in this playlist to share</string>
+
+    <string name="edit_playlist">Edit</string>
+    <string name="save_playlist">Save</string>
+
+    <string name="empty_playlist_message">There are no tracks in this playlist yet</string>
+
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
     </plurals>
 </resources>
